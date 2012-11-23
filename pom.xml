@@ -11,6 +11,7 @@
 
     <modules>
         <module>languager-core</module>
+        <module>languager-maven-plugin</module>
     </modules>
 
 </project>
