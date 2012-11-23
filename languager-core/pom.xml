@@ -82,31 +82,6 @@
 
     </dependencies>
 
-    <scm>
-        <connection>scm:svn:http://repo.mimacom.ch/svn/mimacom-fw-tools/trunk/common/i18n-helper</connection>
-        <developerConnection>scm:svn:http://repo.mimacom.ch/svn/mimacom-fw-tools/trunk/common/i18n-helper
-        </developerConnection>
-        <url>http://repo.mimacom.ch/svn/mimacom-fw-tools/trunk/common/i18n-helper</url>
-    </scm>
 
-    <distributionManagement>
-        <repository>
-            <id>mimacom-repo-id-deploy-open</id>
-            <name>mimacom releases open</name>
-            <uniqueVersion>false</uniqueVersion>
-            <url>${mimacom-deploy-path-releases-open}</url>
-        </repository>
-        <snapshotRepository>
-            <id>mimacom-repo-id-deploy-open</id>
-            <name>mimacom snapshots open</name>
-            <uniqueVersion>false</uniqueVersion>
-            <url>${mimacom-deploy-path-snapshots-open}</url>
-        </snapshotRepository>
-        <site>
-            <id>mimacom-repo-id-deploy-open</id>
-            <name>mimacom sites open</name>
-            <url>${mimacom-deploy-path-sites-open}/i18n-helper/${project.version}</url>
-        </site>
-    </distributionManagement>
 
 </project>

@@ -14,4 +14,30 @@
         <module>languager-maven-plugin</module>
     </modules>
 
+    <scm>
+        <connection>scm:git:https://github.com/nidi3/languager</connection>
+        <developerConnection>scm:svn:https://github.com/nidi3/languager</developerConnection>
+        <url>https://github.com/nidi3/languager</url>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>mimacom-repo-id-deploy-open</id>
+            <name>mimacom releases open</name>
+            <uniqueVersion>false</uniqueVersion>
+            <url>${mimacom-deploy-path-releases-open}</url>
+        </repository>
+        <snapshotRepository>
+            <id>mimacom-repo-id-deploy-open</id>
+            <name>mimacom snapshots open</name>
+            <uniqueVersion>false</uniqueVersion>
+            <url>${mimacom-deploy-path-snapshots-open}</url>
+        </snapshotRepository>
+        <site>
+            <id>mimacom-repo-id-deploy-open</id>
+            <name>mimacom sites open</name>
+            <url>${mimacom-deploy-path-sites-open}/languager/${project.version}</url>
+        </site>
+    </distributionManagement>
+
 </project>
