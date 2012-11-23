@@ -44,7 +44,7 @@
         <site>
             <id>mimacom-repo-id-deploy-open</id>
             <name>mimacom sites open</name>
-            <url>${mimacom-deploy-path-sites-open}/languager/${project.version}</url>
+            <url>${mimacom-deploy-path-sites-open}/stni/languager/${project.version}</url>
         </site>
     </distributionManagement>
 
