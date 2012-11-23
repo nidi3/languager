@@ -9,11 +9,7 @@ import java.util.regex.Matcher;
 import org.junit.Test;
 
 /**
- * Created with IntelliJ IDEA.
- * User: nidi
- * Date: 16.09.12
- * Time: 02:45
- * To change this template use File | Settings | File Templates.
+ *
  */
 public class ReplaceRegexActionTest {
     @Test

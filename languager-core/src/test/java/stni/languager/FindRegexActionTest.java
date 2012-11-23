@@ -8,11 +8,7 @@ import java.util.List;
 import org.junit.Test;
 
 /**
- * Created by IntelliJ IDEA.
- * User: stni
- * Date: 09.03.12
- * Time: 16:19
- * To change this template use File | Settings | File Templates.
+ *
  */
 public class FindRegexActionTest {
     @Test

@@ -1,18 +1,14 @@
 package stni.languager;
 
-import org.codehaus.plexus.util.FileUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.codehaus.plexus.util.FileUtils;
+
 /**
- * Created by IntelliJ IDEA.
- * User: stni
- * Date: 09.03.12
- * Time: 15:48
- * To change this template use File | Settings | File Templates.
+ *
  */
 public class FileCrawler<T extends CrawlPattern, S extends CrawlAction<T>> {
 

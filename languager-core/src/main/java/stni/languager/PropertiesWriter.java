@@ -1,6 +1,10 @@
 package stni.languager;
 
 
+import static stni.languager.MessagesWriter.DEFAULT_COLUMN;
+import static stni.languager.MessagesWriter.KEY_COLUMN;
+import static stni.languager.MessagesWriter.KNOWN_COLUMN;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -11,16 +15,8 @@ import java.io.Reader;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import static stni.languager.MessagesWriter.DEFAULT_COLUMN;
-import static stni.languager.MessagesWriter.KEY_COLUMN;
-import static stni.languager.MessagesWriter.KNOWN_COLUMN;
-
 /**
- * Created by IntelliJ IDEA.
- * User: nidi
- * Date: 09.03.12
- * Time: 22:54
- * To change this template use File | Settings | File Templates.
+ *
  */
 public class PropertiesWriter {
     private static Pattern NEW_LINE = Pattern.compile("\\r?\\n|\\r", Pattern.MULTILINE);

@@ -3,11 +3,7 @@ package stni.languager;
 import java.util.regex.Pattern;
 
 /**
- * Created by IntelliJ IDEA.
- * User: nidi
- * Date: 09.03.12
- * Time: 23:57
- * To change this template use File | Settings | File Templates.
+ *
  */
 public class RegexCrawlPattern extends CrawlPattern {
     private Pattern regex;

@@ -9,11 +9,7 @@ import java.util.Arrays;
 import org.junit.Test;
 
 /**
- * Created by IntelliJ IDEA.
- * User: nidi
- * Date: 10.03.12
- * Time: 03:12
- * To change this template use File | Settings | File Templates.
+ *
  */
 public class UtilTest {
     @Test

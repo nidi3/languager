@@ -7,11 +7,7 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 
 /**
- * Created with IntelliJ IDEA.
- * User: nidi
- * Date: 16.09.12
- * Time: 02:31
- * To change this template use File | Settings | File Templates.
+ *
  */
 public class ReplaceCrawlPattern extends RegexCrawlPattern {
     interface Replacer {

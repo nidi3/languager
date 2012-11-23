@@ -12,11 +12,7 @@ import java.util.Properties;
 import org.junit.Test;
 
 /**
- * Created by IntelliJ IDEA.
- * User: nidi
- * Date: 09.03.12
- * Time: 23:07
- * To change this template use File | Settings | File Templates.
+ *
  */
 public class PropertiesWriterTest {
     private PropertiesWriter writer = new PropertiesWriter(',');

@@ -1,11 +1,7 @@
 package stni.languager;
 
 /**
- * Created by IntelliJ IDEA.
- * User: nidi
- * Date: 09.03.12
- * Time: 23:57
- * To change this template use File | Settings | File Templates.
+ *
  */
 public class CrawlPattern {
     private String includes;

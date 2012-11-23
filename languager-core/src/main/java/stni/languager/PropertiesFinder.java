@@ -1,8 +1,5 @@
 package stni.languager;
 
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,12 +7,11 @@ import java.util.Properties;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+
 /**
- * Created by IntelliJ IDEA.
- * User: nidi
- * Date: 10.03.12
- * Time: 02:17
- * To change this template use File | Settings | File Templates.
+ *
  */
 public class PropertiesFinder {
     public static final String PROPERTIES = ".properties";

@@ -6,11 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 /**
- * Created with IntelliJ IDEA.
- * User: nidi
- * Date: 16.09.12
- * Time: 02:15
- * To change this template use File | Settings | File Templates.
+ *
  */
 public abstract class AbstractContentReadingCrawlAction<T extends CrawlPattern> implements CrawlAction<T> {
     public void action(File basedir, File file, T pattern) throws IOException {

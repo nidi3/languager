@@ -11,11 +11,7 @@ import org.codehaus.plexus.util.FileUtils;
 import org.junit.Test;
 
 /**
- * Created by IntelliJ IDEA.
- * User: stni
- * Date: 09.03.12
- * Time: 17:10
- * To change this template use File | Settings | File Templates.
+ *
  */
 public class MessagesWriterTest {
     @Test

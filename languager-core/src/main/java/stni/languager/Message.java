@@ -4,11 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
- * User: nidi
- * Date: 10.03.12
- * Time: 01:49
- * To change this template use File | Settings | File Templates.
+ *
  */
 public class Message {
     public interface Transformer {

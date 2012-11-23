@@ -7,11 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
- * User: stni
- * Date: 17.09.12
- * Time: 12:03
- * To change this template use File | Settings | File Templates.
+ *
  */
 class CsvReader {
     private static final char EOI = (char) -1;

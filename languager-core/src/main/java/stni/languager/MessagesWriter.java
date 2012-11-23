@@ -1,7 +1,5 @@
 package stni.languager;
 
-import org.springframework.util.StringUtils;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -11,31 +9,16 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.springframework.util.StringUtils;
+
 /**
- * Created by IntelliJ IDEA.
- * User: stni
- * Date: 09.03.12
- * Time: 16:35
- * To change this template use File | Settings | File Templates.
+ *
  */
 public class MessagesWriter {
     static final int KEY_COLUMN = 0;
     static final int KNOWN_COLUMN = 1;
     static final int DEFAULT_COLUMN = 2;
     static final int FIRST_LANG_COLUMN = 3;
-
-    private static final Comparator<List<String>> FIRST_ELEMENT_COMPARATOR = new Comparator<List<String>>() {
-
-        public int compare(List<String> a, List<String> b) {
-            if (a.isEmpty()) {
-                return b.isEmpty() ? 0 : 1;
-            }
-            if (b.isEmpty()) {
-                return -1;
-            }
-            return a.get(0).compareTo(b.get(0));
-        }
-    };
 
     private final String encoding;
     private final char csvSeparator;
