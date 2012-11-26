@@ -4,11 +4,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  *
  */
 public abstract class AbstractContentReadingCrawlAction<T extends CrawlPattern> implements CrawlAction<T> {
+
+    private Integer[] newlines;
+
     public void action(File basedir, File file, T pattern) throws IOException {
         InputStreamReader in = null;
         try {
@@ -16,6 +22,7 @@ public abstract class AbstractContentReadingCrawlAction<T extends CrawlPattern> 
             char[] ch = new char[(int) file.length()];
             int read = in.read(ch);
             String s = new String(ch, 0, read);
+            findNewlines(s);
             doAction(basedir, file, s, pattern);
         } catch (IOException e) {
             Util.closeSilently(in);
@@ -23,4 +30,22 @@ public abstract class AbstractContentReadingCrawlAction<T extends CrawlPattern> 
     }
 
     protected abstract void doAction(File basedir, File file, String content, T pattern) throws IOException;
+
+    protected void findNewlines(String content) {
+        List<Integer> newlineList = new ArrayList<Integer>();
+        for (int i = 0; i < content.length(); i++) {
+            if (content.charAt(i) == '\n') {
+                newlineList.add(i);
+            }
+        }
+        newlines = newlineList.toArray(new Integer[newlineList.size()]);
+    }
+
+    protected int lineOfPosition(int pos) {
+        return -Arrays.binarySearch(newlines, pos);
+    }
+
+    protected int columnOfPosition(int pos) {
+        return pos - newlines[lineOfPosition(pos) - 2];
+    }
 }

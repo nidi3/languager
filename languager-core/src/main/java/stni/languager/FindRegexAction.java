@@ -10,7 +10,7 @@ import java.util.regex.Matcher;
  */
 public class FindRegexAction extends AbstractContentReadingCrawlAction<RegexCrawlPattern> {
 
-    private final List<List<String>> results = new ArrayList<List<String>>();
+    private final List<FindResult> results = new ArrayList<FindResult>();
 
     @Override
     protected void doAction(File basedir, File file, String content, RegexCrawlPattern pattern) {
@@ -20,11 +20,12 @@ public class FindRegexAction extends AbstractContentReadingCrawlAction<RegexCraw
             for (int i = 1; i <= matcher.groupCount(); i++) {
                 finds.add(matcher.group(i));
             }
-            results.add(finds);
+            results.add(new FindResult(
+                    file.getAbsolutePath(), lineOfPosition(matcher.start()), columnOfPosition(matcher.start()), finds));
         }
     }
 
-    public List<List<String>> getResults() {
+    public List<FindResult> getResults() {
         return results;
     }
 }
