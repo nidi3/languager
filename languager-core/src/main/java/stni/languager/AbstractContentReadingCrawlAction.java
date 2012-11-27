@@ -11,11 +11,11 @@ import java.util.List;
 /**
  *
  */
-public abstract class AbstractContentReadingCrawlAction<T extends CrawlPattern> implements CrawlAction<T> {
+public abstract class AbstractContentReadingCrawlAction implements CrawlAction {
 
     private Integer[] newlines;
 
-    public void action(File basedir, File file, T pattern) throws IOException {
+    public void action(File basedir, File file, CrawlPattern pattern) throws IOException {
         InputStreamReader in = null;
         try {
             in = new InputStreamReader(new FileInputStream(file), pattern.getEncoding());
@@ -29,7 +29,7 @@ public abstract class AbstractContentReadingCrawlAction<T extends CrawlPattern> 
         }
     }
 
-    protected abstract void doAction(File basedir, File file, String content, T pattern) throws IOException;
+    protected abstract void doAction(File basedir, File file, String content, CrawlPattern pattern) throws IOException;
 
     protected void findNewlines(String content) {
         List<Integer> newlineList = new ArrayList<Integer>();
@@ -46,6 +46,7 @@ public abstract class AbstractContentReadingCrawlAction<T extends CrawlPattern> 
     }
 
     protected int columnOfPosition(int pos) {
-        return pos - newlines[lineOfPosition(pos) - 2];
+        final int line = lineOfPosition(pos);
+        return line == 1 ? pos : pos - newlines[line - 2];
     }
 }

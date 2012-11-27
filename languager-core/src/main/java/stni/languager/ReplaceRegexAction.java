@@ -9,17 +9,24 @@ import java.util.regex.Matcher;
 /**
  *
  */
-public class ReplaceRegexAction extends AbstractContentReadingCrawlAction<ReplaceCrawlPattern> {
+public class ReplaceRegexAction extends FindRegexAction {
+    private final ReplaceRegexActionParameter parameter;
+
+    public ReplaceRegexAction(String regex, boolean withEmpty, ReplaceRegexActionParameter parameter) {
+        super(regex, withEmpty);
+        this.parameter = parameter;
+    }
+
     @Override
-    protected void doAction(File basedir, File file, String content, ReplaceCrawlPattern pattern) throws IOException {
-        Matcher matcher = pattern.getRegexPattern().matcher(content);
+    protected void doAction(File basedir, File file, String content, CrawlPattern pattern) throws IOException {
+        Matcher matcher = getRegex().matcher(content);
         StringBuffer s = new StringBuffer();
         while (matcher.find()) {
-            matcher.appendReplacement(s, pattern.getReplacer().replace(matcher));
+            matcher.appendReplacement(s, parameter.getReplacer().replace(matcher));
         }
         matcher.appendTail(s);
         String relativePath = file.getParentFile().getAbsolutePath().substring(basedir.getAbsolutePath().length());
-        File target = new File(pattern.getTargetDir(), relativePath);
+        File target = new File(parameter.getTargetDir(), relativePath);
         target.mkdirs();
         OutputStreamWriter out = null;
         try {

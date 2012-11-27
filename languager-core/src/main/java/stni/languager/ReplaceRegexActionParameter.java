@@ -9,7 +9,7 @@ import java.util.regex.Matcher;
 /**
  *
  */
-public class ReplaceCrawlPattern extends RegexCrawlPattern {
+public class ReplaceRegexActionParameter {
     interface Replacer {
         String replace(Matcher m);
     }
@@ -19,11 +19,8 @@ public class ReplaceCrawlPattern extends RegexCrawlPattern {
     private String replacement;
     private List<Escape> escapes = new ArrayList<Escape>();
 
-    public ReplaceCrawlPattern() {
-    }
-
-    public ReplaceCrawlPattern(String regex, String includes, String excludes, String encoding, File targetDir, final String replacement, final Properties properties) {
-        this(regex, includes, excludes, encoding, targetDir, null);
+    public ReplaceRegexActionParameter(File targetDir, final String replacement, final Properties properties) {
+        this.targetDir = targetDir;
         setReplacer(new Replacer() {
             public String replace(Matcher m) {
                 return replacement.replace("$1", value(m, 1)).replace("$2", value(m, 2));
@@ -42,8 +39,7 @@ public class ReplaceCrawlPattern extends RegexCrawlPattern {
         });
     }
 
-    public ReplaceCrawlPattern(String regex, String includes, String excludes, String encoding, File targetDir, Replacer replacer) {
-        super(regex, includes, excludes, encoding);
+    public ReplaceRegexActionParameter(File targetDir, Replacer replacer) {
         this.targetDir = targetDir;
         this.replacer = replacer;
     }

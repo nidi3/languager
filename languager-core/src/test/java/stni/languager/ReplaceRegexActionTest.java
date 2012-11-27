@@ -24,14 +24,19 @@ public class ReplaceRegexActionTest {
         final Properties en = new Properties();
         en.load(new FileInputStream(new File(target, "msg_en.properties")));
 
-        FileCrawler<ReplaceCrawlPattern, ReplaceRegexAction> crawler = FileCrawler.create(base, new ReplaceRegexAction());
-        crawler.addCrawlPattern(new ReplaceCrawlPattern("<msg key='(.*?)'>(.*?)</msg>", "*.html", null, "utf-8", new File(target, "de"), new ReplaceCrawlPattern.Replacer() {
+        final ReplaceRegexActionParameter param1 = new ReplaceRegexActionParameter(new File(target, "de"), new ReplaceRegexActionParameter.Replacer() {
             public String replace(Matcher m) {
                 String s = de.getProperty(m.group(1));
                 return s == null ? "" : s;
             }
-        }));
-        crawler.addCrawlPattern(new ReplaceCrawlPattern("<msg key='(.*?)'>(.*?)</msg>", "*.html", null, "utf-8", new File(target, "en"), "($1)", en));
+        });
+        FileCrawler<ReplaceRegexAction> crawler = FileCrawler.create(base, new ReplaceRegexAction("<msg key='(.*?)'>(.*?)</msg>", true, param1));
+        crawler.addCrawlPattern(new CrawlPattern("*.html", null, "utf-8"));
+        crawler.crawl();
+
+        final ReplaceRegexActionParameter param2 = new ReplaceRegexActionParameter(new File(target, "en"), "($1)", en);
+        crawler = FileCrawler.create(base, new ReplaceRegexAction("<msg key='(.*?)'>(.*?)</msg>", true, param2));
+        crawler.addCrawlPattern(new CrawlPattern("*.html", null, "utf-8"));
 
         crawler.crawl();
     }
