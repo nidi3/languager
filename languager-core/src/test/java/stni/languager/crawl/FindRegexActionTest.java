@@ -1,4 +1,4 @@
-package stni.languager;
+package stni.languager.crawl;
 
 import static org.junit.Assert.assertEquals;
 
@@ -7,16 +7,18 @@ import java.util.List;
 
 import org.junit.Test;
 
+import stni.languager.BaseTest;
+
 /**
  *
  */
-public class FindRegexActionTest {
+public class FindRegexActionTest extends BaseTest {
     @Test
     public void testFindMsgStrings() throws Exception {
-        File base = baseDir("stni/languager");
-        FileCrawler<FindRegexAction> crawler = FileCrawler.create(base, new FindRegexAction("<msg key='(.*?)'>(.*?)</msg>", false));
-        crawler.addCrawlPattern(new CrawlPattern("*.html", null, "utf-8"));
-        List<FindResult> res = crawler.crawl().getResults();
+        File base = fromTestDir("");
+        FileCrawler crawler = new FileCrawler();
+        crawler.addCrawlPattern(new CrawlPattern(base, "*.html", null, "utf-8"));
+        List<FindResult> res = crawler.crawl(new FindRegexAction("<msg key='(.*?)'>(.*?)</msg>", false)).getResults();
         assertEquals(2, res.size());
         assertEquals(2, res.get(0).getFindings().size());
         assertEquals("key1", res.get(0).getFindings().get(0));
@@ -31,10 +33,10 @@ public class FindRegexActionTest {
 
     @Test
     public void testFindRawStrings() throws Exception {
-        File base = baseDir("stni/languager");
-        FileCrawler<FindRegexAction> crawler = FileCrawler.create(base, new FindRegexAction(">(.*?)<", false));
-        crawler.addCrawlPattern(new CrawlPattern("*.html", null, "utf-8"));
-        List<FindResult> res = crawler.crawl().getResults();
+        File base = fromTestDir("");
+        FileCrawler crawler = new FileCrawler();
+        crawler.addCrawlPattern(new CrawlPattern(base, "*.html", "test_*", "utf-8"));
+        List<FindResult> res = crawler.crawl(new FindRegexAction(">(.*?)<", false)).getResults();
         assertEquals(4, res.size());
         assertEquals("Test1", res.get(0).getFindings().get(0).trim());
         assertEquals("default1", res.get(1).getFindings().get(0).trim());
@@ -42,11 +44,5 @@ public class FindRegexActionTest {
         assertEquals("default2", res.get(3).getFindings().get(0).trim());
     }
 
-    private File baseDir(String relativeToTest) {
-        File base = new File("src/test/resources/" + relativeToTest);
-        if (!base.exists()) {
-            base = new File("languager-core/src/test/resources/" + relativeToTest);
-        }
-        return base;
-    }
+
 }

@@ -28,7 +28,7 @@ public class PropertiesFinder {
             Resource[] resources = resolver.getResources(propertyLocation + "*" + PROPERTIES);
             for (Resource resource : resources) {
                 String lang = resource.getFilename();
-                lang = lang.substring(lang.length() - 20, lang.length() - PROPERTIES.length());
+                lang = lang.substring(Math.max(0, lang.length() - 20), lang.length() - PROPERTIES.length());
                 int pos = lang.indexOf('_');
                 if (pos < 0) {
                     lang = "";

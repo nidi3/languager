@@ -9,7 +9,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.classworlds.ClassWorld;
 
-import stni.languager.CrawlPattern;
+import stni.languager.crawl.CrawlPattern;
 import stni.languager.KeyExtractor;
 
 /**
@@ -40,7 +40,7 @@ public class ExtractKeysMojo extends AbstractI18nMojo {
         getLog().info("Start extracting message keys");
         final KeyExtractor extractor = new KeyExtractor();
         try {
-            extractor.extractFromFiles(basedir, searchPaths);
+            extractor.extractFromFiles(searchPaths);
             checkSameDefaultValues(extractor);
             checkSameKeys(extractor);
 
@@ -65,7 +65,7 @@ public class ExtractKeysMojo extends AbstractI18nMojo {
     }
 
     private void checkSameDefaultValues(KeyExtractor extractor) {
-        for (KeyExtractor.FindResultPair same : extractor.getSameDefaultValueResults()) {
+        for (KeyExtractor.FindResultPair same : extractor.getSameValueResults()) {
             getLog().warn("******************Found identical default value with different keys:\n" +
                     "'" + extractor.keyOf(same.getResult1()) + "': " + extractor.location(same.getResult1()) + "\n" +
                     "'" + extractor.keyOf(same.getResult2()) + "': " + extractor.location(same.getResult2()));

@@ -53,4 +53,29 @@ public class Message {
     public void addValue(String lang, String value) {
         values.put(lang, value);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Message message = (Message) o;
+
+        if (known != message.known) return false;
+        if (defaultValue != null ? !defaultValue.equals(message.defaultValue) : message.defaultValue != null)
+            return false;
+        if (!key.equals(message.key)) return false;
+        if (!values.equals(message.values)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = key.hashCode();
+        result = 31 * result + (known ? 1 : 0);
+        result = 31 * result + (defaultValue != null ? defaultValue.hashCode() : 0);
+        result = 31 * result + values.hashCode();
+        return result;
+    }
 }

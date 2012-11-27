@@ -9,6 +9,11 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import stni.languager.crawl.CrawlPattern;
+import stni.languager.crawl.FileCrawler;
+import stni.languager.crawl.FindRegexAction;
+import stni.languager.crawl.FindResult;
+
 /**
  *
  */
@@ -33,64 +38,64 @@ public class KeyExtractor {
 
     private final SortedMap<String, Message> messages = new TreeMap<String, Message>();
     private final Map<String, FindResult> resultsByKey = new HashMap<String, FindResult>();
-    private final Map<String, FindResult> resultsByDefaultValue = new HashMap<String, FindResult>();
+    private final Map<String, FindResult> resultsByValue = new HashMap<String, FindResult>();
     private final List<FindResultPair> sameKeyResults = new ArrayList<FindResultPair>();
-    private final List<FindResultPair> sameDefaultValueResults = new ArrayList<FindResultPair>();
+    private final List<FindResultPair> sameValueResults = new ArrayList<FindResultPair>();
 
-    public void extractFromFiles(File basedir, List<CrawlPattern> searchPaths) throws IOException {
-        FileCrawler<FindRegexAction> crawler = initCrawler(basedir, searchPaths);
-
-        for (FindResult result : crawler.crawl().getResults()) {
+    public void extractFromFiles(List<CrawlPattern> searchPaths, String regex, boolean withEmpty) throws IOException {
+        FileCrawler crawler = initCrawler(searchPaths);
+        for (FindResult result : crawler.crawl(new FindRegexAction(regex, withEmpty)).getResults()) {
             checkSameKey(result);
-            checkSameDefaultValue(result);
-            messages.put(keyOf(result), new Message(keyOf(result), true, defaultValueOf(result)));
+            checkSameValue(result);
+            messages.put(keyOf(result), new Message(keyOf(result), true, valueOf(result)));
         }
     }
 
-    protected FileCrawler<FindRegexAction> initCrawler(File basedir, List<CrawlPattern> searchPaths) {
-        FileCrawler<FindRegexAction> crawler = FileCrawler.create(basedir, new FindRegexAction(null,true));
+    protected FileCrawler initCrawler(List<CrawlPattern> searchPaths) {
+        FileCrawler crawler = new FileCrawler();
         for (CrawlPattern searchPath : searchPaths) {
-            if (searchPath.getEncoding() == null) {
-                searchPath.setEncoding("utf-8");
-            }
             crawler.addCrawlPattern(searchPath);
         }
         return crawler;
     }
 
     private void checkSameKey(FindResult result) {
-        String defaultValue = defaultValueOf(result);
+        String value = valueOf(result);
         String key = keyOf(result);
         final FindResult sameKey = resultsByKey.get(key);
-        if (sameKey != null && !nullSafeEquals(defaultValue, defaultValueOf(sameKey))) {
-            sameKeyResults.add(new FindResultPair(result, sameKey));
+        if (sameKey != null && !nullSafeEquals(value, valueOf(sameKey))) {
+            sameKeyResults.add(new FindResultPair(sameKey, result));
         }
         resultsByKey.put(key, result);
     }
 
-    private void checkSameDefaultValue(FindResult result) {
-        String defaultValue = defaultValueOf(result);
+    private void checkSameValue(FindResult result) {
+        String value = valueOf(result);
         String key = keyOf(result);
-        final FindResult sameDefaultValue = resultsByDefaultValue.get(defaultValue);
-        if (sameDefaultValue != null && !key.equals(keyOf(sameDefaultValue))) {
-            sameDefaultValueResults.add(new FindResultPair(result, sameDefaultValue));
+        final FindResult sameValue = resultsByValue.get(value);
+        if (sameValue != null && !key.equals(keyOf(sameValue))) {
+            sameValueResults.add(new FindResultPair(sameValue,result));
         }
-        resultsByDefaultValue.put(defaultValue, result);
+        resultsByValue.put(value, result);
     }
 
     public List<FindResultPair> getSameKeyResults() {
         return sameKeyResults;
     }
 
-    public List<FindResultPair> getSameDefaultValueResults() {
-        return sameDefaultValueResults;
+    public List<FindResultPair> getSameValueResults() {
+        return sameValueResults;
+    }
+
+    public SortedMap<String, Message> getMessages() {
+        return messages;
     }
 
     public String location(FindResult result) {
         return result.getSource() + ":" + result.getLine() + ":" + result.getColumn();
     }
 
-    public String defaultValueOf(FindResult result) {
+    public String valueOf(FindResult result) {
         return result.getFindings().size() > 1 ? result.getFindings().get(1) : null;
     }
 

@@ -10,9 +10,9 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.plexus.util.FileUtils;
 
-import stni.languager.FileCrawler;
-import stni.languager.ReplaceRegexAction;
-import stni.languager.ReplaceRegexActionParameter;
+import stni.languager.crawl.FileCrawler;
+import stni.languager.crawl.ReplaceRegexAction;
+import stni.languager.crawl.ReplaceRegexActionParameter;
 
 /**
  * @author stni
@@ -51,7 +51,7 @@ public class ReplaceKeysMojo extends AbstractI18nMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         getLog().info("Start replacing keys");
         try {
-            FileCrawler<ReplaceRegexAction> crawler = FileCrawler.create(basedir, new ReplaceRegexAction(null, true, null));
+            FileCrawler crawler = new FileCrawler();
             List<File> props = FileUtils.getFiles(propertiesDirectory, baseName + "_*.properties", null);
             for (File prop : props) {
                 int pos = prop.getName().indexOf("_");
@@ -68,7 +68,7 @@ public class ReplaceKeysMojo extends AbstractI18nMojo {
 //                    crawler.addCrawlPattern(actionParameter);
 //                }
             }
-            crawler.crawl();
+            crawler.crawl(new ReplaceRegexAction(null, true, null));
         } catch (IOException e) {
             throw new MojoExecutionException("Problem replaceing keys", e);
         }

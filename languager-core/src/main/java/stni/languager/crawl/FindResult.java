@@ -1,4 +1,4 @@
-package stni.languager;
+package stni.languager.crawl;
 
 import java.util.List;
 
