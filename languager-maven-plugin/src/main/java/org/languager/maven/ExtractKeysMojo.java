@@ -20,9 +20,9 @@ import stni.languager.KeyExtractor;
 public class ExtractKeysMojo extends AbstractI18nMojo {
 
     /**
-     * @parameter expression="${searchPaths}"
+     * @parameter expression="${searches}"
      */
-    protected List<CrawlPattern> searchPaths = Collections.emptyList();
+    protected List<Search> searches = Collections.emptyList();
 
     /**
      * @parameter expression="${propertyLocations}"
@@ -40,7 +40,7 @@ public class ExtractKeysMojo extends AbstractI18nMojo {
         getLog().info("Start extracting message keys");
         final KeyExtractor extractor = new KeyExtractor();
         try {
-            //extractor.extractFromFiles(searchPaths);
+            extractor.extractFromFiles(searchPaths);
             checkSameDefaultValues(extractor);
             checkSameKeys(extractor);
 

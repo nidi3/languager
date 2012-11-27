@@ -46,9 +46,9 @@ public class KeyExtractor {
     private final List<FindResultPair> sameValueResults = new ArrayList<FindResultPair>();
     private boolean cleanedNegatives = true;
 
-    public void extractFromFiles(List<CrawlPattern> searchPaths, String regex, EnumSet<FindRegexAction.Flag> flags) throws IOException {
+    public void extractFromFiles(CrawlPattern crawlPattern, String regex, EnumSet<FindRegexAction.Flag> flags) throws IOException {
         cleanedNegatives = false;
-        FileCrawler crawler = initCrawler(searchPaths);
+        FileCrawler crawler = createCrawler(crawlPattern);
         for (FindResult result : crawler.crawl(new FindRegexAction(regex, flags)).getResults()) {
             checkSameKey(result);
             checkSameValue(result);
@@ -56,20 +56,16 @@ public class KeyExtractor {
         }
     }
 
-    public void extractNegativesFromFiles(List<CrawlPattern> searchPaths, String regex, EnumSet<FindRegexAction.Flag> flags) throws IOException {
+    public void extractNegativesFromFiles(CrawlPattern crawlPattern, String regex, EnumSet<FindRegexAction.Flag> flags) throws IOException {
         cleanedNegatives = false;
-        FileCrawler crawler = initCrawler(searchPaths);
+        FileCrawler crawler = createCrawler(crawlPattern);
         for (FindResult result : crawler.crawl(new FindRegexAction(regex, flags)).getResults()) {
             negatives.put(keyOf(result), result);
         }
     }
 
-    protected FileCrawler initCrawler(List<CrawlPattern> searchPaths) {
-        FileCrawler crawler = new FileCrawler();
-        for (CrawlPattern searchPath : searchPaths) {
-            crawler.addCrawlPattern(searchPath);
-        }
-        return crawler;
+    protected FileCrawler createCrawler(CrawlPattern crawlPattern) {
+        return new FileCrawler(crawlPattern);
     }
 
     private void checkSameKey(FindResult result) {

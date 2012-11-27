@@ -29,9 +29,7 @@ public class ReplaceRegexActionTest extends BaseTest {
         final Properties en = new Properties();
         en.load(new FileInputStream(new File(target, "msg_en.properties")));
 
-        FileCrawler crawler = new FileCrawler();
-
-        crawler.addCrawlPattern(new CrawlPattern(base, "*.html", null, "utf-8"));
+        FileCrawler crawler = new FileCrawler(new CrawlPattern(base, "*.html", null, "utf-8"));
         crawler.crawl(
                 new ReplaceRegexAction("<msg key='(.*?)'>(.*?)</msg>", null,
                         new ReplaceRegexActionParameter(new File(target, "de"), new ReplaceRegexActionParameter.Replacer() {
@@ -44,7 +42,6 @@ public class ReplaceRegexActionTest extends BaseTest {
         );
         assertFileEquals(new File(base, "test_expected_de.html"), new File(target, "de/test.html"));
 
-        crawler.addCrawlPattern(new CrawlPattern(base, "*.html", null, "utf-8"));
         crawler.crawl(
                 new ReplaceRegexAction("<msg key='(.*?)'>(.*?)</msg>", null,
                         new ReplaceRegexActionParameter(new File(target, "en"), "($1)", en, null)

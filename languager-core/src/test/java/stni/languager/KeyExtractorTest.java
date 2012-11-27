@@ -61,9 +61,11 @@ public class KeyExtractorTest extends BaseTest {
     }
 
     @Test
-    public void testUnmessagedText() throws Exception {
+    public void testUnmessagedText1() throws Exception {
         final KeyExtractor extractor = extractFromFile();
-        extractor.extractNegativesFromFiles(Arrays.asList(new CrawlPattern(base, "test2.html", null, "utf-8")), ">(.*?)<", EnumSet.of(FindRegexAction.Flag.TRIM));
+        extractor.extractNegativesFromFiles(
+                new CrawlPattern(base, "test2.html", null, "utf-8"),
+                ">(.*?)<", EnumSet.of(FindRegexAction.Flag.TRIM));
 
         final Collection<FindResult> negatives = extractor.getNegatives();
         assertEquals(2, negatives.size());
@@ -72,6 +74,26 @@ public class KeyExtractorTest extends BaseTest {
         assertTrue(first.equals("default1") || first.equals("Text1"));
         final String second = iter.next().getFindings().get(0);
         assertTrue(second.equals("default1") || second.equals("Text1"));
+    }
+
+    @Test
+    public void testUnmessagedText2() throws Exception {
+        final KeyExtractor extractor = new KeyExtractor();
+        extractor.extractFromFiles(
+                new CrawlPattern(base, "*.js", null, "utf-8"),
+                "/\\*-(.*?)\\*/'(.*?)'", null);
+        extractor.extractNegativesFromFiles(
+                new CrawlPattern(base, "*.js", null, "utf-8"),
+                "'(.*?)'", EnumSet.of(FindRegexAction.Flag.TRIM));
+
+        final Collection<FindResult> negatives = extractor.getNegatives();
+        assertEquals(1, negatives.size());
+        final Iterator<FindResult> iter = negatives.iterator();
+        assertEquals("unmessaged", iter.next().getFindings().get(0));
+
+        final SortedMap<String, Message> messages = extractor.getMessages();
+        assertEquals(1, messages.size());
+        assertEquals(new Message("key", true, "messaged"), messages.get("key"));
     }
 
     @Test
@@ -87,7 +109,9 @@ public class KeyExtractorTest extends BaseTest {
 
     private KeyExtractor extractFromFile() throws IOException {
         final KeyExtractor extractor = new KeyExtractor();
-        extractor.extractFromFiles(Arrays.asList(new CrawlPattern(base, "test2.html", null, "utf-8")), "<msg key='(.*?)'>(.*?)</msg>", null);
+        extractor.extractFromFiles(
+                new CrawlPattern(base, "test2.html", null, "utf-8"),
+                "<msg key='(.*?)'>(.*?)</msg>", null);
         return extractor;
     }
 
