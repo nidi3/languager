@@ -1,10 +1,13 @@
 package stni.languager;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +16,8 @@ import java.util.SortedMap;
 import org.junit.Test;
 
 import stni.languager.crawl.CrawlPattern;
+import stni.languager.crawl.FindRegexAction;
+import stni.languager.crawl.FindResult;
 
 /**
  *
@@ -22,7 +27,7 @@ public class KeyExtractorTest extends BaseTest {
 
     @Test
     public void testSameKey() throws Exception {
-        final KeyExtractor extractor = extractFromFile("<msg key='(.*?)'>(.*?)</msg>");
+        final KeyExtractor extractor = extractFromFile();
 
         final List<KeyExtractor.FindResultPair> sameKeyResults = extractor.getSameKeyResults();
         assertEquals(1, sameKeyResults.size());
@@ -40,7 +45,7 @@ public class KeyExtractorTest extends BaseTest {
 
     @Test
     public void testSameDefaultValue() throws Exception {
-        final KeyExtractor extractor = extractFromFile("<msg key='(.*?)'>(.*?)</msg>");
+        final KeyExtractor extractor = extractFromFile();
 
         final List<KeyExtractor.FindResultPair> sameValueResults = extractor.getSameValueResults();
         assertEquals(1, sameValueResults.size());
@@ -57,35 +62,32 @@ public class KeyExtractorTest extends BaseTest {
 
     @Test
     public void testUnmessagedText() throws Exception {
-        final KeyExtractor extractor = extractFromFile(">.*?<");
+        final KeyExtractor extractor = extractFromFile();
+        extractor.extractNegativesFromFiles(Arrays.asList(new CrawlPattern(base, "test2.html", null, "utf-8")), ">(.*?)<", EnumSet.of(FindRegexAction.Flag.TRIM));
 
-        final List<KeyExtractor.FindResultPair> sameValueResults = extractor.getSameValueResults();
-        assertEquals(1, sameValueResults.size());
-        final KeyExtractor.FindResultPair sameValue = sameValueResults.get(0);
-        assertEquals("key2", extractor.keyOf(sameValue.getResult1()));
-        assertEquals("key3", extractor.keyOf(sameValue.getResult2()));
-        assertEquals(new File(base, "test2.html").getAbsolutePath(), sameValue.getResult1().getSource());
-        assertEquals(new File(base, "test2.html").getAbsolutePath(), sameValue.getResult2().getSource());
-        assertEquals(5, sameValue.getResult1().getLine());
-        assertEquals(6, sameValue.getResult2().getLine());
-        assertEquals(9, sameValue.getResult1().getColumn());
-        assertEquals(9, sameValue.getResult2().getColumn());
+        final Collection<FindResult> negatives = extractor.getNegatives();
+        assertEquals(2, negatives.size());
+        final Iterator<FindResult> iter = negatives.iterator();
+        final String first = iter.next().getFindings().get(0);
+        assertTrue(first.equals("default1") || first.equals("Text1"));
+        final String second = iter.next().getFindings().get(0);
+        assertTrue(second.equals("default1") || second.equals("Text1"));
     }
 
     @Test
     public void testMessages() throws Exception {
-        final KeyExtractor extractor = extractFromFile("<msg key='(.*?)'>(.*?)</msg>");
+        final KeyExtractor extractor = extractFromFile();
 
         assertEquals(3, extractor.getMessages().size());
         final Iterator<Map.Entry<String, Message>> iter = extractor.getMessages().entrySet().iterator();
         assertEntryEquals("key1", new Message("key1", true, "default2"), iter.next());
-        assertEntryEquals("key2", new Message("key2", true, "Text"), iter.next());
-        assertEntryEquals("key3", new Message("key3", true, "Text"), iter.next());
+        assertEntryEquals("key2", new Message("key2", true, "Text2"), iter.next());
+        assertEntryEquals("key3", new Message("key3", true, "Text2"), iter.next());
     }
 
-    private KeyExtractor extractFromFile(String regex) throws IOException {
+    private KeyExtractor extractFromFile() throws IOException {
         final KeyExtractor extractor = new KeyExtractor();
-        extractor.extractFromFiles(Arrays.asList(new CrawlPattern(base, "test2.html", null, "utf-8")), regex, false);
+        extractor.extractFromFiles(Arrays.asList(new CrawlPattern(base, "test2.html", null, "utf-8")), "<msg key='(.*?)'>(.*?)</msg>", null);
         return extractor;
     }
 

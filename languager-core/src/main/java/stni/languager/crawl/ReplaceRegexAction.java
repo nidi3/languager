@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.EnumSet;
 import java.util.regex.Matcher;
 
 /**
@@ -12,8 +13,8 @@ import java.util.regex.Matcher;
 public class ReplaceRegexAction extends FindRegexAction {
     private final ReplaceRegexActionParameter parameter;
 
-    public ReplaceRegexAction(String regex, boolean withEmpty, ReplaceRegexActionParameter parameter) {
-        super(regex, withEmpty);
+    public ReplaceRegexAction(String regex, EnumSet<Flag> flags, ReplaceRegexActionParameter parameter) {
+        super(regex, flags);
         this.parameter = parameter;
     }
 

@@ -33,7 +33,7 @@ public class ReplaceRegexActionTest extends BaseTest {
 
         crawler.addCrawlPattern(new CrawlPattern(base, "*.html", null, "utf-8"));
         crawler.crawl(
-                new ReplaceRegexAction("<msg key='(.*?)'>(.*?)</msg>", true,
+                new ReplaceRegexAction("<msg key='(.*?)'>(.*?)</msg>", null,
                         new ReplaceRegexActionParameter(new File(target, "de"), new ReplaceRegexActionParameter.Replacer() {
                             public String replace(Matcher m) {
                                 String s = de.getProperty(m.group(1));
@@ -46,7 +46,7 @@ public class ReplaceRegexActionTest extends BaseTest {
 
         crawler.addCrawlPattern(new CrawlPattern(base, "*.html", null, "utf-8"));
         crawler.crawl(
-                new ReplaceRegexAction("<msg key='(.*?)'>(.*?)</msg>", true,
+                new ReplaceRegexAction("<msg key='(.*?)'>(.*?)</msg>", null,
                         new ReplaceRegexActionParameter(new File(target, "en"), "($1)", en, null)
                 )
         );

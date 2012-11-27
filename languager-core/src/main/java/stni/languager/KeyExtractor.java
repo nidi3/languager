@@ -3,6 +3,8 @@ package stni.languager;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,17 +39,28 @@ public class KeyExtractor {
     }
 
     private final SortedMap<String, Message> messages = new TreeMap<String, Message>();
+    private final Map<String, FindResult> negatives = new HashMap<String, FindResult>();
     private final Map<String, FindResult> resultsByKey = new HashMap<String, FindResult>();
     private final Map<String, FindResult> resultsByValue = new HashMap<String, FindResult>();
     private final List<FindResultPair> sameKeyResults = new ArrayList<FindResultPair>();
     private final List<FindResultPair> sameValueResults = new ArrayList<FindResultPair>();
+    private boolean cleanedNegatives = true;
 
-    public void extractFromFiles(List<CrawlPattern> searchPaths, String regex, boolean withEmpty) throws IOException {
+    public void extractFromFiles(List<CrawlPattern> searchPaths, String regex, EnumSet<FindRegexAction.Flag> flags) throws IOException {
+        cleanedNegatives = false;
         FileCrawler crawler = initCrawler(searchPaths);
-        for (FindResult result : crawler.crawl(new FindRegexAction(regex, withEmpty)).getResults()) {
+        for (FindResult result : crawler.crawl(new FindRegexAction(regex, flags)).getResults()) {
             checkSameKey(result);
             checkSameValue(result);
             messages.put(keyOf(result), new Message(keyOf(result), true, valueOf(result)));
+        }
+    }
+
+    public void extractNegativesFromFiles(List<CrawlPattern> searchPaths, String regex, EnumSet<FindRegexAction.Flag> flags) throws IOException {
+        cleanedNegatives = false;
+        FileCrawler crawler = initCrawler(searchPaths);
+        for (FindResult result : crawler.crawl(new FindRegexAction(regex, flags)).getResults()) {
+            negatives.put(keyOf(result), result);
         }
     }
 
@@ -74,7 +87,7 @@ public class KeyExtractor {
         String key = keyOf(result);
         final FindResult sameValue = resultsByValue.get(value);
         if (sameValue != null && !key.equals(keyOf(sameValue))) {
-            sameValueResults.add(new FindResultPair(sameValue,result));
+            sameValueResults.add(new FindResultPair(sameValue, result));
         }
         resultsByValue.put(value, result);
     }
@@ -85,6 +98,20 @@ public class KeyExtractor {
 
     public List<FindResultPair> getSameValueResults() {
         return sameValueResults;
+    }
+
+    public Collection<FindResult> getNegatives() {
+        cleanNegatives();
+        return negatives.values();
+    }
+
+    private void cleanNegatives() {
+        if (!cleanedNegatives) {
+            cleanedNegatives = true;
+            for (Message message : messages.values()) {
+                negatives.remove(message.getDefaultValue());
+            }
+        }
     }
 
     public SortedMap<String, Message> getMessages() {

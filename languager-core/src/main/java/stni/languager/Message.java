@@ -78,4 +78,14 @@ public class Message {
         result = 31 * result + values.hashCode();
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "key='" + key + '\'' +
+                ", known=" + known +
+                ", defaultValue='" + defaultValue + '\'' +
+                ", values=" + values +
+                '}';
+    }
 }

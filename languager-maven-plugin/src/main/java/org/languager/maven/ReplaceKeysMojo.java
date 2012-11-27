@@ -68,7 +68,7 @@ public class ReplaceKeysMojo extends AbstractI18nMojo {
 //                    crawler.addCrawlPattern(actionParameter);
 //                }
             }
-            crawler.crawl(new ReplaceRegexAction(null, true, null));
+            crawler.crawl(new ReplaceRegexAction(null, null, null));
         } catch (IOException e) {
             throw new MojoExecutionException("Problem replaceing keys", e);
         }
