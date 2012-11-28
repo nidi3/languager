@@ -1,20 +1,20 @@
 package org.languager.maven;
 
+import java.io.File;
+
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.project.MavenProject;
-
-import java.io.File;
 
 /**
  * @phase generate-sources
  */
 public abstract class AbstractI18nMojo extends AbstractMojo {
     /**
-     * @parameter expression="${basedir}"
+     * @parameter expression="${searchBasedir}"
      * @required
      * @readonly
      */
-    protected File basedir;
+    private File searchBasedir;
 
     /**
      * @parameter expression="${project}"
@@ -38,9 +38,13 @@ public abstract class AbstractI18nMojo extends AbstractMojo {
      */
     protected char csvSeparator = ';';
 
+    protected File searchBasedir() {
+        return searchBasedir != null ? searchBasedir : project.getBasedir();
+    }
+
     protected File getCsvFile() {
         if (csvFile == null) {
-            return new File(basedir, "src/main/resources/messages.csv");
+            return new File(project.getBasedir(), "src/main/resources/messages.csv");
         }
         return csvFile;
     }

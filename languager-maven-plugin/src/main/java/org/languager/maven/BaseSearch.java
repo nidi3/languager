@@ -3,10 +3,19 @@ package org.languager.maven;
 /**
  *
  */
-public class SearchPattern {
+public class BaseSearch {
+    private String regex;
     private String includes;
     private String excludes;
     private String encoding;
+
+    public String getRegex() {
+        return regex;
+    }
+
+    public void setRegex(String regex) {
+        this.regex = regex;
+    }
 
     public String getIncludes() {
         return includes;

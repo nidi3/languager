@@ -2,14 +2,7 @@ package stni.languager;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 
 import stni.languager.crawl.CrawlPattern;
 import stni.languager.crawl.FileCrawler;
@@ -20,6 +13,16 @@ import stni.languager.crawl.FindResult;
  *
  */
 public class KeyExtractor {
+    private static final Comparator<FindResult> FIND_RESULT_SORTER = new Comparator<FindResult>() {
+        public int compare(FindResult result1, FindResult result2) {
+            int res = result1.getSource().compareTo(result2.getSource());
+            if (res == 0) {
+                res = result1.getLine() - result2.getLine();
+            }
+            return res;
+        }
+    };
+
     public static class FindResultPair {
         private final FindResult result1;
         private final FindResult result2;
@@ -98,7 +101,9 @@ public class KeyExtractor {
 
     public Collection<FindResult> getNegatives() {
         cleanNegatives();
-        return negatives.values();
+        final ArrayList<FindResult> findResults = new ArrayList<FindResult>(negatives.values());
+        Collections.sort(findResults, FIND_RESULT_SORTER);
+        return findResults;
     }
 
     private void cleanNegatives() {

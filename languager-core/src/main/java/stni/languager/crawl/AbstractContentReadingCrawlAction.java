@@ -12,14 +12,13 @@ import java.util.List;
  *
  */
 public abstract class AbstractContentReadingCrawlAction implements CrawlAction {
-    private static final String DEFAULT_ENCODING = "utf-8";
 
     private Integer[] newlines;
 
     public void action(File basedir, File file, CrawlPattern pattern) throws IOException {
         InputStreamReader in = null;
         try {
-            in = new InputStreamReader(new FileInputStream(file), pattern.getEncoding() == null ? DEFAULT_ENCODING : pattern.getEncoding());
+            in = new InputStreamReader(new FileInputStream(file), pattern.getEncoding());
             char[] ch = new char[(int) file.length()];
             int read = in.read(ch);
             String s = new String(ch, 0, read);
@@ -50,6 +49,5 @@ public abstract class AbstractContentReadingCrawlAction implements CrawlAction {
         final int line = lineOfPosition(pos);
         return line == 1 ? pos : pos - newlines[line - 2];
     }
-
 
 }

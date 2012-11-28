@@ -10,6 +10,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.plexus.util.FileUtils;
 
+import stni.languager.crawl.CrawlPattern;
 import stni.languager.crawl.FileCrawler;
 import stni.languager.crawl.ReplaceRegexAction;
 import stni.languager.crawl.ReplaceRegexActionParameter;
@@ -19,11 +20,7 @@ import stni.languager.crawl.ReplaceRegexActionParameter;
  * @goal replaceKeys
  */
 public class ReplaceKeysMojo extends AbstractI18nMojo {
-    /**
-     * @parameter expression="${basedir}"
-     * @required
-     */
-    protected File basedir;
+    private static final String PROPERTIES = ".properties";
 
     /**
      * @parameter expression="${replacedDirectory}" default-value="target/${project.build.finalName}"
@@ -31,9 +28,9 @@ public class ReplaceKeysMojo extends AbstractI18nMojo {
     protected File replacedDirectory;
 
     /**
-     * @parameter expression="${searchPaths}"
+     * @parameter expression="${searches}"
      */
-    protected List<ReplaceRegexActionParameter> searchPaths;
+    protected List<ReplaceSearch> searches;
 
     /**
      * @parameter expression="${baseName}"
@@ -51,26 +48,22 @@ public class ReplaceKeysMojo extends AbstractI18nMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         getLog().info("Start replacing keys");
         try {
-            FileCrawler crawler = new FileCrawler();
-            List<File> props = FileUtils.getFiles(propertiesDirectory, baseName + "_*.properties", null);
+            List<File> props = FileUtils.getFiles(propertiesDirectory, baseName + "_*" + PROPERTIES, null);
             for (File prop : props) {
                 int pos = prop.getName().indexOf("_");
-                String lang = prop.getName().substring(pos + 1, prop.getName().length() - 11);
+                String lang = prop.getName().substring(pos + 1, prop.getName().length() - PROPERTIES.length());
                 Properties p = new Properties();
                 p.load(new FileInputStream(prop));
-//                for (ReplaceRegexActionParameter searchPath : searchPaths) {
-//                    if (searchPath.getEncoding() == null) {
-//                        searchPath.setEncoding("utf-8");
-//                    }
-//                    ReplaceRegexActionParameter actionParameter = new ReplaceRegexActionParameter(searchPath.getRegex(), false, searchPath.getIncludes(), searchPath.getExcludes(), searchPath.getEncoding(),
-//                            new File(replacedDirectory, lang), searchPath.getReplacement(), p);
-//                    actionParameter.setEscapes(searchPath.getEscapes());
-//                    crawler.addCrawlPattern(actionParameter);
-//                }
+                for (ReplaceSearch search : searches) {
+                    FileCrawler crawler = new FileCrawler(
+                            new CrawlPattern(searchBasedir(), search.getIncludes(), search.getExcludes(), search.getEncoding()));
+                    ReplaceRegexActionParameter actionParameter = new ReplaceRegexActionParameter(
+                            new File(replacedDirectory, lang), search.getReplacement(), p, search.getEscapes());
+                    crawler.crawl(new ReplaceRegexAction(search.getRegex(), null, actionParameter));
+                }
             }
-            crawler.crawl(new ReplaceRegexAction(null, null, null));
         } catch (IOException e) {
-            throw new MojoExecutionException("Problem replaceing keys", e);
+            throw new MojoExecutionException("Problem replacing keys", e);
         }
     }
 }

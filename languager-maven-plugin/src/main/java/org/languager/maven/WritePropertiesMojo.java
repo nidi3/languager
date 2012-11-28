@@ -14,13 +14,6 @@ import stni.languager.PropertiesWriter;
  */
 public class WritePropertiesMojo extends AbstractI18nMojo {
     /**
-     * @parameter expression="${basedir}"
-     * @required
-     * @readonly
-     */
-    protected File basedir;
-
-    /**
      * @parameter expression="${propertiesDirectory}" default-value="target/generated-sources"
      */
     protected File propertiesDirectory;
@@ -37,7 +30,7 @@ public class WritePropertiesMojo extends AbstractI18nMojo {
         try {
             PropertiesWriter writer = new PropertiesWriter(csvSeparator);
             if (propertiesDirectory == null) {
-                propertiesDirectory = new File(basedir, "target/generated-sources");
+                propertiesDirectory = new File(project.getBasedir(), "target/generated-sources");
             }
             propertiesDirectory.mkdirs();
             writer.write(getCsvFile(), csvEncoding, propertiesDirectory, baseName);

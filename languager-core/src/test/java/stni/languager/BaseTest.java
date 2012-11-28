@@ -12,7 +12,7 @@ public class BaseTest {
     protected File fromBaseDir(String relativeToBase) {
         File base = new File("languager-core");
         if (!base.exists()) {
-            base = new File("");
+            base = new File(".");
         }
         return new File(base, relativeToBase);
     }
