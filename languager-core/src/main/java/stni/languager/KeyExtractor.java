@@ -126,23 +126,31 @@ public class KeyExtractor {
     private void cleanNegatives() {
         if (!cleanedNegatives) {
             cleanedNegatives = true;
-            for (Iterator<FindResult> iter = negatives.values().iterator(); iter.hasNext(); ) {
-                final FindResult result = iter.next();
-                final List<FindResult> sourceResults = resultsByLocation.get(result.getSource());
-                if (sourceResults != null) {
-                    for (FindResult sourceResult : sourceResults) {
-                        if (sourceResult.getStart() > result.getStart()) {
-                            break;
-                        } else if (sourceResult.getEnd() >= result.getEnd()) {
-                            iter.remove();
-                            break;
-                        }
+            removeInnerNegatives();
+            removeIgnoredNegatives();
+        }
+    }
+
+    private void removeInnerNegatives() {
+        for (Iterator<FindResult> iter = negatives.values().iterator(); iter.hasNext(); ) {
+            final FindResult result = iter.next();
+            final List<FindResult> sourceResults = resultsByLocation.get(result.getSource());
+            if (sourceResults != null) {
+                for (FindResult sourceResult : sourceResults) {
+                    if (sourceResult.getStart() > result.getStart()) {
+                        break;
+                    } else if (sourceResult.getEnd() >= result.getEnd()) {
+                        iter.remove();
+                        break;
                     }
                 }
             }
-            for (String ignored : ignoredValues) {
-                negatives.remove(ignored);
-            }
+        }
+    }
+
+    private void removeIgnoredNegatives() {
+        for (String ignored : ignoredValues) {
+            negatives.remove(ignored);
         }
     }
 
