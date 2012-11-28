@@ -42,7 +42,9 @@ public class KeyExtractor {
     }
 
     private final SortedMap<String, Message> messages = new TreeMap<String, Message>();
+    private final Set<String> ignoredValues = new HashSet<String>();
     private final Map<String, FindResult> negatives = new HashMap<String, FindResult>();
+    private final Map<String, List<FindResult>> resultsByLocation = new HashMap<String, List<FindResult>>();
     private final Map<String, FindResult> resultsByKey = new HashMap<String, FindResult>();
     private final Map<String, FindResult> resultsByValue = new HashMap<String, FindResult>();
     private final List<FindResultPair> sameKeyResults = new ArrayList<FindResultPair>();
@@ -53,10 +55,25 @@ public class KeyExtractor {
         cleanedNegatives = false;
         FileCrawler crawler = createCrawler(crawlPattern);
         for (FindResult result : crawler.crawl(new FindRegexAction(regex, flags)).getResults()) {
-            checkSameKey(result);
-            checkSameValue(result);
-            messages.put(keyOf(result), new Message(keyOf(result), true, valueOf(result)));
+            final String key = keyOf(result);
+            if (key.length() == 0) {
+                ignoredValues.add(valueOf(result));
+            } else {
+                checkSameKey(result);
+                checkSameValue(result);
+                messages.put(key, new Message(key, true, valueOf(result)));
+                saveResultByLocation(result);
+            }
         }
+    }
+
+    private void saveResultByLocation(FindResult result) {
+        List<FindResult> resultListByLocation = resultsByLocation.get(result.getSource());
+        if (resultListByLocation == null) {
+            resultListByLocation = new ArrayList<FindResult>();
+            resultsByLocation.put(result.getSource(), resultListByLocation);
+        }
+        resultListByLocation.add(result);
     }
 
     public void extractNegativesFromFiles(CrawlPattern crawlPattern, String regex, EnumSet<FindRegexAction.Flag> flags) throws IOException {
@@ -109,14 +126,32 @@ public class KeyExtractor {
     private void cleanNegatives() {
         if (!cleanedNegatives) {
             cleanedNegatives = true;
-            for (Message message : messages.values()) {
-                negatives.remove(message.getDefaultValue());
+            for (Iterator<FindResult> iter = negatives.values().iterator(); iter.hasNext(); ) {
+                final FindResult result = iter.next();
+                final List<FindResult> sourceResults = resultsByLocation.get(result.getSource());
+                if (sourceResults != null) {
+                    for (FindResult sourceResult : sourceResults) {
+                        if (sourceResult.getStart() > result.getStart()) {
+                            break;
+                        } else if (sourceResult.getEnd() >= result.getEnd()) {
+                            iter.remove();
+                            break;
+                        }
+                    }
+                }
+            }
+            for (String ignored : ignoredValues) {
+                negatives.remove(ignored);
             }
         }
     }
 
     public SortedMap<String, Message> getMessages() {
         return messages;
+    }
+
+    public Set<String> getIgnoredValues() {
+        return ignoredValues;
     }
 
     public String location(FindResult result) {

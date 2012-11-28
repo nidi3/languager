@@ -1,2 +1,3 @@
 var a = 'unmessaged',
-    b = /*-key*/'messaged';
+    b = /*-key*/'messaged',
+    c = /*-*/'ignored';

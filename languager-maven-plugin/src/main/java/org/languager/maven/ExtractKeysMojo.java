@@ -1,5 +1,8 @@
 package org.languager.maven;
 
+import static stni.languager.crawl.FindRegexAction.Flag.TRIM;
+import static stni.languager.crawl.FindRegexAction.Flag.WITH_EMPTY;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
@@ -74,12 +77,12 @@ public class ExtractKeysMojo extends AbstractI18nMojo {
             if (search.getRegex() != null) {
                 extractor.extractFromFiles(
                         new CrawlPattern(searchBasedir(), search.getIncludes(), search.getExcludes(), search.getEncoding()),
-                        search.getRegex(), EnumSet.of(FindRegexAction.Flag.TRIM));
+                        search.getRegex(), EnumSet.of(TRIM, WITH_EMPTY));
             }
             if (search.getNegativeRegex() != null) {
                 extractor.extractNegativesFromFiles(
                         new CrawlPattern(searchBasedir(), search.getIncludes(), search.getExcludes(), search.getEncoding()),
-                        search.getNegativeRegex(), EnumSet.of(FindRegexAction.Flag.TRIM));
+                        search.getNegativeRegex(), EnumSet.of(TRIM));
             }
         }
     }
