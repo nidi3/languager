@@ -23,7 +23,9 @@ public class ReplaceRegexAction extends FindRegexAction {
         Matcher matcher = getRegex().matcher(content);
         StringBuffer s = new StringBuffer();
         while (matcher.find()) {
-            matcher.appendReplacement(s, parameter.getReplacer().replace(matcher));
+            if (isValidMatch(matcher)) {
+                matcher.appendReplacement(s, parameter.getReplacer().replace(matcher));
+            }
         }
         matcher.appendTail(s);
         String relativePath = file.getParentFile().getAbsolutePath().substring(basedir.getAbsolutePath().length());

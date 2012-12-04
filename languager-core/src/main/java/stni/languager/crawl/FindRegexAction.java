@@ -36,7 +36,7 @@ public class FindRegexAction extends AbstractContentReadingCrawlAction {
     protected void doAction(File basedir, File file, String content, CrawlPattern pattern) throws IOException {
         Matcher matcher = regex.matcher(content);
         while (matcher.find()) {
-            if (flags.contains(WITH_EMPTY) || group(matcher, 1).length() > 0) {
+            if (isValidMatch(matcher)) {
                 List<String> finds = new ArrayList<String>();
                 for (int i = 1; i <= matcher.groupCount(); i++) {
                     finds.add(group(matcher, i));
@@ -48,7 +48,11 @@ public class FindRegexAction extends AbstractContentReadingCrawlAction {
         }
     }
 
-    private String group(Matcher m, int index) {
+    protected boolean isValidMatch(Matcher matcher) {
+        return flags.contains(WITH_EMPTY) || group(matcher, 1).length() > 0;
+    }
+
+    protected String group(Matcher m, int index) {
         final String group = m.group(index);
         return flags.contains(TRIM) ? group.trim() : group;
     }
