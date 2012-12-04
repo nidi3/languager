@@ -57,7 +57,9 @@ public class ExtractKeysMojo extends AbstractI18nMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         getLog().info("Start extracting message keys");
         try {
-            logfile = new PrintWriter(new OutputStreamWriter(new FileOutputStream(new File(project.getBasedir(), "target/languager.log")), "utf-8"));
+            File target = new File(project.getBuild().getDirectory());
+            target.mkdirs();
+            logfile = new PrintWriter(new OutputStreamWriter(new FileOutputStream(new File(target, "languager.log")), "utf-8"));
             extractFromFiles();
 
             if (verbose) {
