@@ -24,7 +24,7 @@ public abstract class AbstractContentReadingCrawlAction implements CrawlAction {
             String s = new String(ch, 0, read);
             findNewlines(s);
             doAction(basedir, file, s, pattern);
-        } catch (IOException e) {
+        } finally {
             Util.closeSilently(in);
         }
     }

@@ -38,7 +38,6 @@ public class ReplaceKeysMojo extends AbstractI18nMojo {
      */
     protected String baseName;
 
-
     /**
      * @parameter expression="${propertiesDirectory}" default-value="target/generated-sources"
      */
@@ -58,11 +57,11 @@ public class ReplaceKeysMojo extends AbstractI18nMojo {
                     FileCrawler crawler = new FileCrawler(
                             new CrawlPattern(searchBasedir(), search.getIncludes(), search.getExcludes(), search.getEncoding()));
                     ReplaceRegexActionParameter actionParameter = new ReplaceRegexActionParameter(
-                            new File(replacedDirectory, lang), search.getReplacement(), p, search.getEscapes());
+                            new File(replacedDirectory, lang), search.getReplacement(), search.getParameterMarker(), search.getParameterSeparator(), p, search.getEscapes());
                     crawler.crawl(new ReplaceRegexAction(search.getRegex(), null, actionParameter));
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new MojoExecutionException("Problem replacing keys", e);
         }
     }

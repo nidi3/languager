@@ -44,10 +44,25 @@ public class ReplaceRegexActionTest extends BaseTest {
 
         crawler.crawl(
                 new ReplaceRegexAction("<msg key='(.*?)'>(.*?)</msg>", null,
-                        new ReplaceRegexActionParameter(new File(target, "en"), "($1)", en, null)
+                        new ReplaceRegexActionParameter(new File(target, "en"), "($1)", null, null, en, null)
                 )
         );
         assertFileEquals(new File(base, "test_expected_en.html"), new File(target, "en/test.html"));
+    }
+
+    @Test
+    public void parameterized() throws IOException {
+        File base = fromTestDir("");
+        File target = fromBaseDir("target");
+        Properties properties = new Properties();
+        properties.setProperty("key", "1{}2{}3{}4");
+        FileCrawler crawler = new FileCrawler(new CrawlPattern(base, "parameter.html", null, "utf-8"));
+        crawler.crawl(
+                new ReplaceRegexAction("<msg key='(.*?)'(?:\\s*params='(.*?)')?>(.*?)</msg>", null,
+                        new ReplaceRegexActionParameter(new File(target, "de"), "$1", "{}", ",", properties, null)
+                )
+        );
+        assertFileEquals(new File(base, "test_expected_parameter.html"), new File(target, "de/parameter.html"));
     }
 
     private void assertFileEquals(File expected, File toTest) throws IOException {

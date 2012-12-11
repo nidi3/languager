@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugin.logging.Log;
 import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.classworlds.ClassWorld;
 
@@ -86,19 +87,20 @@ public class ExtractKeysMojo extends AbstractI18nMojo {
     }
 
     private void initLogger() throws IOException {
-        List<PrintWriter> logWriters = new ArrayList<PrintWriter>();
+        PrintWriter printWriter = null;
+        Log mavenLog = null;
         if (log != null && log.length() > 0) {
             for (String logName : log.split(",")) {
                 if ("console".equalsIgnoreCase(logName)) {
-                    logWriters.add(new PrintWriter(System.out));
+                    mavenLog = getLog();
                 } else if ("file".equalsIgnoreCase(logName)) {
                     File target = new File(project.getBuild().getDirectory());
                     target.mkdirs();
-                    logWriters.add(new PrintWriter(new OutputStreamWriter(new FileOutputStream(new File(target, "languager.log")), "utf-8")));
+                    printWriter = new PrintWriter(new OutputStreamWriter(new FileOutputStream(new File(target, "languager.log")), "utf-8"));
                 }
             }
         }
-        logger = new DelegatingLogger(logWriters);
+        logger = new DelegatingLogger(printWriter, mavenLog);
     }
 
     private void extractFromFiles() throws IOException {

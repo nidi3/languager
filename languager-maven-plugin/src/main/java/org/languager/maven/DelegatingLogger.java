@@ -3,6 +3,8 @@ package org.languager.maven;
 import java.io.PrintWriter;
 import java.util.List;
 
+import org.apache.maven.plugin.logging.Log;
+
 /**
  * Created with IntelliJ IDEA.
  * User: stni
@@ -11,25 +13,30 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class DelegatingLogger {
-    private List<PrintWriter> delegates;
+    private final PrintWriter printWriter;
+    private final Log log;
 
-    public DelegatingLogger(List<PrintWriter> delegates) {
-        this.delegates = delegates;
+    public DelegatingLogger(PrintWriter printWriter, Log log) {
+        this.printWriter = printWriter;
+        this.log = log;
     }
 
     public void log(String message) {
-        for (PrintWriter pw : delegates) {
-            pw.println(message);
+        if (printWriter != null) {
+            printWriter.println(message);
+        }
+        if (log != null) {
+            log.info(message);
         }
     }
 
     public boolean isEmpty() {
-        return delegates.isEmpty();
+        return printWriter == null && log == null;
     }
 
     public void close() {
-        for (PrintWriter pw : delegates) {
-            pw.close();
+        if (printWriter != null) {
+            printWriter.close();
         }
     }
 }
