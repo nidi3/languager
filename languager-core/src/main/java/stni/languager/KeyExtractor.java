@@ -44,7 +44,7 @@ public class KeyExtractor {
     private final SortedMap<String, Message> messages = new TreeMap<String, Message>();
     private final Set<String> ignoredValues = new HashSet<String>();
     private final Map<String, FindResult> negatives = new HashMap<String, FindResult>();
-    private final Map<String, List<FindResult>> resultsByLocation = new HashMap<String, List<FindResult>>();
+    private final Map<File, List<FindResult>> resultsByLocation = new HashMap<File, List<FindResult>>();
     private final Map<String, FindResult> resultsByKey = new HashMap<String, FindResult>();
     private final Map<String, FindResult> resultsByValue = new HashMap<String, FindResult>();
     private final List<FindResultPair> sameKeyResults = new ArrayList<FindResultPair>();

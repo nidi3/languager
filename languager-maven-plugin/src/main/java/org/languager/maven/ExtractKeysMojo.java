@@ -5,11 +5,14 @@ import static stni.languager.crawl.FindRegexAction.Flag.WITH_EMPTY;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
@@ -47,22 +50,21 @@ public class ExtractKeysMojo extends AbstractI18nMojo {
     protected boolean removeNewLines = true;
 
     /**
-     * @parameter expression="${verbose}" default-value="true"
+     * @parameter expression="${log}" default-value="console"
      */
-    protected boolean verbose = true;
+    protected String log = "console";
 
     private KeyExtractor extractor = new KeyExtractor();
-    private PrintWriter logfile;
+    private DelegatingLogger logger;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         getLog().info("Start extracting message keys");
         try {
-            File target = new File(project.getBuild().getDirectory());
-            target.mkdirs();
-            logfile = new PrintWriter(new OutputStreamWriter(new FileOutputStream(new File(target, "languager.log")), "utf-8"));
+            initLogger();
+
             extractFromFiles();
 
-            if (verbose) {
+            if (!logger.isEmpty()) {
                 checkSameDefaultValues();
                 checkUnmessagedStrings();
                 checkSameKeys();
@@ -79,8 +81,24 @@ public class ExtractKeysMojo extends AbstractI18nMojo {
         } catch (Exception e) {
             throw new MojoExecutionException("Problem extracting keys", e);
         } finally {
-            Util.closeSilently(logfile);
+            logger.close();
         }
+    }
+
+    private void initLogger() throws IOException {
+        List<PrintWriter> logWriters = new ArrayList<PrintWriter>();
+        if (log != null && log.length() > 0) {
+            for (String logName : log.split(",")) {
+                if ("console".equalsIgnoreCase(logName)) {
+                    logWriters.add(new PrintWriter(System.out));
+                } else if ("file".equalsIgnoreCase(logName)) {
+                    File target = new File(project.getBuild().getDirectory());
+                    target.mkdirs();
+                    logWriters.add(new PrintWriter(new OutputStreamWriter(new FileOutputStream(new File(target, "languager.log")), "utf-8")));
+                }
+            }
+        }
+        logger = new DelegatingLogger(logWriters);
     }
 
     private void extractFromFiles() throws IOException {
@@ -99,27 +117,31 @@ public class ExtractKeysMojo extends AbstractI18nMojo {
     }
 
     private void checkSameKeys() {
-        logfile.println("******************Identical keys with different values:");
+        logger.log("******************Identical keys with different values:");
         for (KeyExtractor.FindResultPair same : extractor.getSameKeyResults()) {
-            logfile.println(extractor.keyOf(same.getResult1()) + "':");
-            logfile.println(extractor.location(same.getResult1()));
-            logfile.println(extractor.location(same.getResult2()));
+            logger.log(extractor.keyOf(same.getResult1()) + "':");
+            logger.log(location(same.getResult1()));
+            logger.log(location(same.getResult2()));
         }
     }
 
+    private String location(FindResult findResult) {
+        return findResult.getSource().getAbsolutePath() + " (" + findResult.getSource().getName() + ":" + findResult.getLine() + ")";
+    }
+
     private void checkSameDefaultValues() {
-        logfile.println("******************Identical values with different keys:");
+        logger.log("******************Identical values with different keys:");
         for (KeyExtractor.FindResultPair same : extractor.getSameValueResults()) {
-            logfile.println(extractor.keyOf(same.getResult1()) + "' / '" + extractor.keyOf(same.getResult2()) + "':");
-            logfile.println(extractor.location(same.getResult1()));
-            logfile.println(extractor.location(same.getResult2()));
+            logger.log(extractor.keyOf(same.getResult1()) + "' / '" + extractor.keyOf(same.getResult2()) + "':");
+            logger.log(location(same.getResult1()));
+            logger.log(location(same.getResult2()));
         }
     }
 
     private void checkUnmessagedStrings() {
-        logfile.println("******************Texts that are not messagized:");
+        logger.log("******************Texts that are not messagized:");
         for (FindResult negative : extractor.getNegatives()) {
-            logfile.println(pad(extractor.keyOf(negative).replace('\n', ' ').replace('\r', ' ')) + " at " + extractor.location(negative));
+            logger.log(pad(extractor.keyOf(negative).replace('\n', ' ').replace('\r', ' ')) + " at " + location(negative));
         }
     }
 

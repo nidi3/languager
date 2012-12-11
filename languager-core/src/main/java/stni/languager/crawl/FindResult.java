@@ -1,19 +1,20 @@
 package stni.languager.crawl;
 
+import java.io.File;
 import java.util.List;
 
 /**
  *
  */
 public class FindResult {
-    private final String source;
+    private final File source;
     private final int start;
     private final int end;
     private final int line;
     private final int column;
     private final List<String> findings;
 
-    public FindResult(String source, int start, int end, int line, int column, List<String> findings) {
+    public FindResult(File source, int start, int end, int line, int column, List<String> findings) {
         this.source = source;
         this.start = start;
         this.end = end;
@@ -22,7 +23,7 @@ public class FindResult {
         this.findings = findings;
     }
 
-    public String getSource() {
+    public File getSource() {
         return source;
     }
 

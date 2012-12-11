@@ -42,7 +42,7 @@ public class FindRegexAction extends AbstractContentReadingCrawlAction {
                     finds.add(group(matcher, i));
                 }
                 results.add(new FindResult(
-                        file.getAbsolutePath(), matcher.start(), matcher.end(),
+                        file, matcher.start(), matcher.end(),
                         lineOfPosition(matcher.start()), columnOfPosition(matcher.start()), finds));
             }
         }

@@ -34,8 +34,8 @@ public class KeyExtractorTest extends BaseTest {
         final KeyExtractor.FindResultPair sameKey = sameKeyResults.get(0);
         assertEquals("key1", extractor.keyOf(sameKey.getResult1()));
         assertEquals("key1", extractor.keyOf(sameKey.getResult2()));
-        assertEquals(new File(base, "test2.html").getAbsolutePath(), sameKey.getResult1().getSource());
-        assertEquals(new File(base, "test2.html").getAbsolutePath(), sameKey.getResult2().getSource());
+        assertEquals(new File(base, "test2.html"), sameKey.getResult1().getSource());
+        assertEquals(new File(base, "test2.html"), sameKey.getResult2().getSource());
         assertEquals(3, sameKey.getResult1().getLine());
         assertEquals(4, sameKey.getResult2().getLine());
         assertEquals(32, sameKey.getResult1().getColumn());
@@ -52,8 +52,8 @@ public class KeyExtractorTest extends BaseTest {
         final KeyExtractor.FindResultPair sameValue = sameValueResults.get(0);
         assertEquals("key2", extractor.keyOf(sameValue.getResult1()));
         assertEquals("key3", extractor.keyOf(sameValue.getResult2()));
-        assertEquals(new File(base, "test2.html").getAbsolutePath(), sameValue.getResult1().getSource());
-        assertEquals(new File(base, "test2.html").getAbsolutePath(), sameValue.getResult2().getSource());
+        assertEquals(new File(base, "test2.html"), sameValue.getResult1().getSource());
+        assertEquals(new File(base, "test2.html"), sameValue.getResult2().getSource());
         assertEquals(5, sameValue.getResult1().getLine());
         assertEquals(6, sameValue.getResult2().getLine());
         assertEquals(15, sameValue.getResult1().getColumn());
