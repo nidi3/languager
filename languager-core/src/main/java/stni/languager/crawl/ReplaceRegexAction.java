@@ -14,7 +14,7 @@ public class ReplaceRegexAction extends FindRegexAction {
     private final ReplaceRegexActionParameter parameter;
 
     public ReplaceRegexAction(String regex, EnumSet<Flag> flags, ReplaceRegexActionParameter parameter) {
-        super(regex, flags);
+        super(regex, null, flags);
         this.parameter = parameter;
     }
 

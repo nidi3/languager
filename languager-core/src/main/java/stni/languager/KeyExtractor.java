@@ -54,7 +54,7 @@ public class KeyExtractor {
     public void extractFromFiles(CrawlPattern crawlPattern, String regex, EnumSet<FindRegexAction.Flag> flags) throws IOException {
         cleanedNegatives = false;
         FileCrawler crawler = createCrawler(crawlPattern);
-        for (FindResult result : crawler.crawl(new FindRegexAction(regex, flags)).getResults()) {
+        for (FindResult result : crawler.crawl(new FindRegexAction(regex, null, flags)).getResults()) {
             final String key = keyOf(result);
             if (key.length() == 0) {
                 ignoredValues.add(valueOf(result));
@@ -76,10 +76,10 @@ public class KeyExtractor {
         resultListByLocation.add(result);
     }
 
-    public void extractNegativesFromFiles(CrawlPattern crawlPattern, String regex, EnumSet<FindRegexAction.Flag> flags) throws IOException {
+    public void extractNegativesFromFiles(CrawlPattern crawlPattern, String regex, String ignoreRegex, EnumSet<FindRegexAction.Flag> flags) throws IOException {
         cleanedNegatives = false;
         FileCrawler crawler = createCrawler(crawlPattern);
-        for (FindResult result : crawler.crawl(new FindRegexAction(regex, flags)).getResults()) {
+        for (FindResult result : crawler.crawl(new FindRegexAction(regex, ignoreRegex, flags)).getResults()) {
             negatives.put(keyOf(result), result);
         }
     }

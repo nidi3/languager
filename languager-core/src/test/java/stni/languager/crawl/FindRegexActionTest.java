@@ -18,7 +18,7 @@ public class FindRegexActionTest extends BaseTest {
     public void testFindMsgStrings() throws Exception {
         File base = fromTestDir("");
         FileCrawler crawler = new FileCrawler(new CrawlPattern(base, "*.html", "*2*,inner*,p*", "utf-8"));
-        List<FindResult> res = crawler.crawl(new FindRegexAction("<msg key='(.*?)'>(.*?)</msg>", null)).getResults();
+        List<FindResult> res = crawler.crawl(new FindRegexAction("<msg key='(.*?)'>(.*?)</msg>",null, null)).getResults();
         assertEquals(2, res.size());
         assertEquals(2, res.get(0).getFindings().size());
         assertEquals("key1", res.get(0).getFindings().get(0));
@@ -35,7 +35,7 @@ public class FindRegexActionTest extends BaseTest {
     public void testFindRawStrings() throws Exception {
         File base = fromTestDir("");
         FileCrawler crawler = new FileCrawler(new CrawlPattern(base, "test.html",null, "utf-8"));
-        List<FindResult> res = crawler.crawl(new FindRegexAction(">(.*?)<", EnumSet.of(FindRegexAction.Flag.TRIM))).getResults();
+        List<FindResult> res = crawler.crawl(new FindRegexAction(">(.*?)<",null, EnumSet.of(FindRegexAction.Flag.TRIM))).getResults();
         assertEquals(4, res.size());
         assertEquals("Test1", res.get(0).getFindings().get(0).trim());
         assertEquals("default1", res.get(1).getFindings().get(0).trim());

@@ -113,7 +113,7 @@ public class ExtractKeysMojo extends AbstractI18nMojo {
             if (search.getNegativeRegex() != null) {
                 extractor.extractNegativesFromFiles(
                         new CrawlPattern(searchBasedir(), search.getIncludes(), search.getExcludes(), search.getEncoding()),
-                        search.getNegativeRegex(), EnumSet.of(TRIM));
+                        search.getNegativeRegex(), search.getIgnoreRegex(), EnumSet.of(TRIM));
             }
         }
     }

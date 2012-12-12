@@ -65,7 +65,21 @@ public class KeyExtractorTest extends BaseTest {
         final KeyExtractor extractor = extractFromFile();
         extractor.extractNegativesFromFiles(
                 new CrawlPattern(base, "test2.html", null, "utf-8"),
-                ">(.*?)<", EnumSet.of(FindRegexAction.Flag.TRIM));
+                ">(.*?)<", null, EnumSet.of(FindRegexAction.Flag.TRIM));
+
+        final Collection<FindResult> negatives = extractor.getNegatives();
+        assertEquals(2, negatives.size());
+        Iterator<FindResult> iter = negatives.iterator();
+        assertEquals("Text9", iter.next().getFindings().get(0));
+        assertEquals("{{ignore}}", iter.next().getFindings().get(0));
+    }
+
+    @Test
+    public void testUnmessagedWithIgnore() throws Exception {
+        final KeyExtractor extractor = extractFromFile();
+        extractor.extractNegativesFromFiles(
+                new CrawlPattern(base, "test2.html", null, "utf-8"),
+                ">(.*?)<", "\\{\\{.*?\\}\\}", EnumSet.of(FindRegexAction.Flag.TRIM));
 
         final Collection<FindResult> negatives = extractor.getNegatives();
         assertEquals(1, negatives.size());
@@ -80,7 +94,7 @@ public class KeyExtractorTest extends BaseTest {
                 "<msg key='(.*?)'>(.*?)</msg>", EnumSet.of(FindRegexAction.Flag.WITH_EMPTY));
         extractor.extractNegativesFromFiles(
                 new CrawlPattern(base, "inner.html", null, "utf-8"),
-                ">(.*?)<", EnumSet.of(FindRegexAction.Flag.TRIM));
+                ">(.*?)<", null, EnumSet.of(FindRegexAction.Flag.TRIM));
 
         final Collection<FindResult> negatives = extractor.getNegatives();
         assertEquals(0, negatives.size());
@@ -94,7 +108,7 @@ public class KeyExtractorTest extends BaseTest {
                 "/\\*-(.*?)\\*/'(.*?)'", EnumSet.of(FindRegexAction.Flag.WITH_EMPTY));
         extractor.extractNegativesFromFiles(
                 new CrawlPattern(base, "*.js", null, "utf-8"),
-                "'(.*?)'", EnumSet.of(FindRegexAction.Flag.TRIM));
+                "'(.*?)'", null, EnumSet.of(FindRegexAction.Flag.TRIM));
 
         final Collection<FindResult> negatives = extractor.getNegatives();
         assertEquals(1, negatives.size());
