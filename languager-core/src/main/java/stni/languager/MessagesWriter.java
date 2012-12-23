@@ -86,7 +86,7 @@ public class MessagesWriter {
             out.writeLine(firstParts);
             writeLine(out, firstParts, msgs.values());
         } finally {
-            out.close();
+            Util.closeSilently(out);
         }
     }
 
