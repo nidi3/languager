@@ -1,4 +1,4 @@
-key,unknown,default value,en,de
-key1,,blu,value3,
-key2,,,value1,wert1
-key3,*,bla,value1,wert1
+key,status,default value,en,de
+key1,+,blu,value3,
+key2,-,,value1,wert2
+key3,*,bla,value1,wert3

@@ -9,6 +9,8 @@ import stni.languager.crawl.FileCrawler;
 import stni.languager.crawl.FindRegexAction;
 import stni.languager.crawl.FindResult;
 
+import static stni.languager.Message.Status.FOUND;
+
 /**
  *
  */
@@ -61,7 +63,7 @@ public class KeyExtractor {
             } else {
                 checkSameKey(result);
                 checkSameValue(result);
-                messages.put(key, new Message(key, true, valueOf(result)));
+                messages.put(key, new Message(key, FOUND, valueOf(result)));
                 saveResultByLocation(result);
             }
         }

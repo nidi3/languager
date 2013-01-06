@@ -1,6 +1,7 @@
 package stni.languager;
 
 import static org.junit.Assert.assertEquals;
+import static stni.languager.Message.Status.FOUND;
 
 import java.io.File;
 import java.io.IOException;
@@ -117,7 +118,7 @@ public class KeyExtractorTest extends BaseTest {
 
         final SortedMap<String, Message> messages = extractor.getMessages();
         assertEquals(1, messages.size());
-        assertEquals(new Message("key", true, "messaged"), messages.get("key"));
+        assertEquals(new Message("key", FOUND, "messaged"), messages.get("key"));
 
         final Set<String> ignoredValues = extractor.getIgnoredValues();
         assertEquals(1, ignoredValues.size());
@@ -131,9 +132,9 @@ public class KeyExtractorTest extends BaseTest {
 
         assertEquals(3, extractor.getMessages().size());
         final Iterator<Map.Entry<String, Message>> iter = extractor.getMessages().entrySet().iterator();
-        assertEntryEquals("key1", new Message("key1", true, "default2"), iter.next());
-        assertEntryEquals("key2", new Message("key2", true, "Text2"), iter.next());
-        assertEntryEquals("key3", new Message("key3", true, "Text2"), iter.next());
+        assertEntryEquals("key1", new Message("key1", FOUND, "default2"), iter.next());
+        assertEntryEquals("key2", new Message("key2", FOUND, "Text2"), iter.next());
+        assertEntryEquals("key3", new Message("key3", FOUND, "Text2"), iter.next());
     }
 
     private KeyExtractor extractFromFile() throws IOException {
@@ -160,7 +161,7 @@ public class KeyExtractorTest extends BaseTest {
     @Test
     public void testRemoveNewlines() throws Exception {
         final KeyExtractor extractor = new KeyExtractor();
-        extractor.getMessages().put("key", new Message("key", true, " a\n\n\n   b "));
+        extractor.getMessages().put("key", new Message("key", FOUND, " a\n\n\n   b "));
         extractor.removeNewlines();
         assertEquals("a b", extractor.getMessages().get("key").getDefaultValue());
     }

@@ -25,8 +25,8 @@ public class FindRegexActionTest extends BaseTest {
         assertEquals("default1", res.get(0).getFindings().get(1));
         assertEquals(3, res.get(0).getLine());
         assertEquals(15, res.get(0).getColumn());
-        assertEquals("key2", res.get(1).getFindings().get(0));
-        assertEquals("default2", res.get(1).getFindings().get(1));
+        assertEquals("key3", res.get(1).getFindings().get(0));
+        assertEquals("default3", res.get(1).getFindings().get(1));
         assertEquals(4, res.get(1).getLine());
         assertEquals(15, res.get(1).getColumn());
     }
@@ -40,7 +40,7 @@ public class FindRegexActionTest extends BaseTest {
         assertEquals("Test1", res.get(0).getFindings().get(0).trim());
         assertEquals("default1", res.get(1).getFindings().get(0).trim());
         assertEquals("Test2", res.get(2).getFindings().get(0).trim());
-        assertEquals("default2", res.get(3).getFindings().get(0).trim());
+        assertEquals("default3", res.get(3).getFindings().get(0).trim());
     }
 
 

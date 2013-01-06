@@ -11,19 +11,42 @@ public class Message {
         String transform(String lang, String value);
     }
 
+    public enum Status {
+        FOUND('+'), MANUAL('*'), NOT_FOUND('-');
+
+        private final char symbol;
+
+        private Status(char symbol) {
+            this.symbol = symbol;
+        }
+
+        public char getSymbol() {
+            return symbol;
+        }
+
+        public static Status ofSymbol(char symbol) {
+            for (Status status : values()) {
+                if (symbol == status.getSymbol()) {
+                    return status;
+                }
+            }
+            throw new IllegalArgumentException("Invalid symbol '" + symbol + "'");
+        }
+    }
+
     private final String key;
-    private final boolean known;
+    private final Status status;
     private final String defaultValue;
     private final Map<String, String> values = new HashMap<String, String>();
 
-    public Message(String key, boolean known, String defaultValue) {
+    public Message(String key, Status status, String defaultValue) {
         this.key = key;
-        this.known = known;
+        this.status = status;
         this.defaultValue = defaultValue;
     }
 
     public Message transformed(Transformer transformer) {
-        Message res = new Message(getKey(), isKnown(), transformer.transform("", getDefaultValue()));
+        Message res = new Message(getKey(), getStatus(), transformer.transform("", getDefaultValue()));
         for (Map.Entry<String, String> value : values.entrySet()) {
             res.addValue(value.getKey(), transformer.transform(value.getKey(), value.getValue()));
         }
@@ -34,8 +57,8 @@ public class Message {
         return key;
     }
 
-    public boolean isKnown() {
-        return known;
+    public Status getStatus() {
+        return status;
     }
 
     public String getDefaultValue() {
@@ -61,7 +84,7 @@ public class Message {
 
         Message message = (Message) o;
 
-        if (known != message.known) return false;
+        if (status != message.status) return false;
         if (defaultValue != null ? !defaultValue.equals(message.defaultValue) : message.defaultValue != null)
             return false;
         if (!key.equals(message.key)) return false;
@@ -73,7 +96,7 @@ public class Message {
     @Override
     public int hashCode() {
         int result = key.hashCode();
-        result = 31 * result + (known ? 1 : 0);
+        result = 31 * result + (status.hashCode());
         result = 31 * result + (defaultValue != null ? defaultValue.hashCode() : 0);
         result = 31 * result + values.hashCode();
         return result;
@@ -83,7 +106,7 @@ public class Message {
     public String toString() {
         return "Message{" +
                 "key='" + key + '\'' +
-                ", known=" + known +
+                ", status=" + status +
                 ", defaultValue='" + defaultValue + '\'' +
                 ", values=" + values +
                 '}';

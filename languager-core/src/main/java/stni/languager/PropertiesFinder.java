@@ -10,6 +10,8 @@ import java.util.TreeMap;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
+import static stni.languager.Message.Status.FOUND;
+
 /**
  *
  */
@@ -40,7 +42,7 @@ public class PropertiesFinder {
                 for (String name : props.stringPropertyNames()) {
                     Message message = messages.get(name);
                     if (message == null) {
-                        message = new Message(name, true, null);
+                        message = new Message(name, FOUND, null);
                         messages.put(name, message);
                     }
                     message.addValue(lang, props.getProperty(name));

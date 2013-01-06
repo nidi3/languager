@@ -1,9 +1,10 @@
 package stni.languager;
 
 
+import static stni.languager.Message.Status.NOT_FOUND;
 import static stni.languager.MessagesWriter.DEFAULT_COLUMN;
 import static stni.languager.MessagesWriter.KEY_COLUMN;
-import static stni.languager.MessagesWriter.KNOWN_COLUMN;
+import static stni.languager.MessagesWriter.STATUS_COLUMN;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -34,19 +35,19 @@ public class PropertiesWriter {
     public void write(Reader csv, File outputDir, String basename) throws IOException {
         BufferedReader in = new BufferedReader(csv);
         if (in.ready()) {
-            List<String> first = new CsvReader(in.readLine().toLowerCase(),csvSeparator).readLine();
+            List<String> first = new CsvReader(in.readLine().toLowerCase(), csvSeparator).readLine();
             int langs = first.size() - DEFAULT_COLUMN;
             BufferedWriter[] out = new BufferedWriter[langs];
             out[0] = Util.writer(new File(outputDir, basename + ".properties"), Util.ISO);
             for (int i = 1; i < langs; i++) {
                 out[i] = Util.writer(new File(outputDir, basename + "_" + first.get(i + DEFAULT_COLUMN) + ".properties"), Util.ISO);
             }
-            CsvReader reader = new CsvReader(in,csvSeparator);
+            CsvReader reader = new CsvReader(in, csvSeparator);
             while (in.ready() && !reader.isEndOfInput()) {
                 List<String> line = reader.readLine();
                 String key = line.get(KEY_COLUMN);
-                boolean known = line.size() > KNOWN_COLUMN ? (line.get(KNOWN_COLUMN).length() == 0) : true;
-                if (known) {
+                Message.Status status = MessagesWriter.statusOfLine(line);
+                if (status != NOT_FOUND) {
                     String defaultValue = line.size() > DEFAULT_COLUMN ? line.get(DEFAULT_COLUMN) : ("?" + key + "?");
                     for (int i = 0; i < langs; i++) {
                         String val = defaultValue;
