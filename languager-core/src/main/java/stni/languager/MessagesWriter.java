@@ -74,7 +74,7 @@ public class MessagesWriter {
                                 entry = new Message(key, status == MANUAL ? MANUAL : FOUND, entry.getDefaultValue() == null ? defaultValue : entry.getDefaultValue());
                                 msgs.put(key, entry);
                             }
-                            for (int i = FIRST_LANG_COLUMN; i < line.size(); i++) {
+                            for (int i = FIRST_LANG_COLUMN; i < Math.min(firstParts.size(), line.size()); i++) {
                                 entry.addValue(firstParts.get(i), line.get(i));
                             }
                         }

@@ -24,7 +24,7 @@ class CsvWriter implements Closeable {
         if (value == null) {
             return;
         }
-        if (value.contains("\"") || value.contains(",") || value.contains("\n") || value.contains("\r")) {
+        if (value.contains("\"") || value.indexOf(separator) >= 0 || value.contains("\n") || value.contains("\r")) {
             out.write("\"" + value.replace("\"", "\"\"") + "\"");
         } else {
             out.write(value);
