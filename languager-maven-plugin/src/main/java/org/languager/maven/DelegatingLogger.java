@@ -1,16 +1,11 @@
 package org.languager.maven;
 
 import java.io.PrintWriter;
-import java.util.List;
 
 import org.apache.maven.plugin.logging.Log;
 
 /**
- * Created with IntelliJ IDEA.
- * User: stni
- * Date: 11.12.12
- * Time: 13:35
- * To change this template use File | Settings | File Templates.
+ *
  */
 public class DelegatingLogger {
     private final PrintWriter printWriter;
@@ -28,6 +23,10 @@ public class DelegatingLogger {
         if (log != null) {
             log.info(message);
         }
+    }
+
+    public void logSection(String message) {
+        log("****************** " + message);
     }
 
     public boolean isEmpty() {
