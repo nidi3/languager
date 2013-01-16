@@ -5,13 +5,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.List;
 
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.classworlds.ClassRealm;
+import org.codehaus.classworlds.ClassWorld;
 
 /**
- * @phase generate-sources
+ * @phase generate-resources
  */
 public abstract class AbstractI18nMojo extends AbstractMojo {
     /**
@@ -48,6 +52,11 @@ public abstract class AbstractI18nMojo extends AbstractMojo {
      */
     protected String log = "console";
 
+    /**
+     * @parameter expression="${customizerClass}"
+     */
+    protected String customizerClass;
+
     private DelegatingLogger logger;
 
     protected void initLogger() throws IOException {
@@ -80,5 +89,20 @@ public abstract class AbstractI18nMojo extends AbstractMojo {
             return new File(project.getBasedir(), "src/main/resources/messages.csv");
         }
         return csvFile;
+    }
+
+    protected void extendPluginClasspath(List<String> elements) throws MojoExecutionException {
+        ClassWorld world = new ClassWorld();
+        try {
+            ClassRealm realm = world.newRealm("maven", Thread.currentThread().getContextClassLoader());
+            for (String element : elements) {
+                File elementFile = new File(element);
+                getLog().debug("*** Adding element to plugin classpath " + elementFile.getPath());
+                realm.addConstituent(elementFile.toURI().toURL());
+            }
+            Thread.currentThread().setContextClassLoader(realm.getClassLoader());
+        } catch (Exception ex) {
+            throw new MojoExecutionException(ex.toString(), ex);
+        }
     }
 }

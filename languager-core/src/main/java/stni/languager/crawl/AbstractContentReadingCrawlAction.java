@@ -50,4 +50,11 @@ public abstract class AbstractContentReadingCrawlAction implements CrawlAction {
         return line == 1 ? pos : pos - newlines[line - 2];
     }
 
+    protected File target(File source, File sourceBaseDir, File targetDir) {
+        String relativeSource = source.getParentFile().getAbsolutePath().substring(sourceBaseDir.getAbsolutePath().length());
+        File target = new File(targetDir, relativeSource);
+        target.mkdirs();
+        return target;
+    }
+
 }

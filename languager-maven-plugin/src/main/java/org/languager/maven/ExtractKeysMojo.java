@@ -126,19 +126,4 @@ public class ExtractKeysMojo extends AbstractI18nMojo {
         }
         return "'" + s;
     }
-
-    private void extendPluginClasspath(List<String> elements) throws MojoExecutionException {
-        ClassWorld world = new ClassWorld();
-        try {
-            ClassRealm realm = world.newRealm("maven", Thread.currentThread().getContextClassLoader());
-            for (String element : elements) {
-                File elementFile = new File(element);
-                getLog().debug("*** Adding element to plugin classpath " + elementFile.getPath());
-                realm.addConstituent(elementFile.toURI().toURL());
-            }
-            Thread.currentThread().setContextClassLoader(realm.getClassLoader());
-        } catch (Exception ex) {
-            throw new MojoExecutionException(ex.toString(), ex);
-        }
-    }
 }
