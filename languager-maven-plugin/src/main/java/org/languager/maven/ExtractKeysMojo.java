@@ -3,7 +3,6 @@ package org.languager.maven;
 import static stni.languager.crawl.FindRegexAction.Flag.TRIM;
 import static stni.languager.crawl.FindRegexAction.Flag.WITH_EMPTY;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -11,12 +10,10 @@ import java.util.List;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.codehaus.classworlds.ClassRealm;
-import org.codehaus.classworlds.ClassWorld;
 
+import stni.languager.FindResult;
 import stni.languager.KeyExtractor;
 import stni.languager.crawl.CrawlPattern;
-import stni.languager.crawl.FindResult;
 
 /**
  * @author stni
@@ -88,20 +85,16 @@ public class ExtractKeysMojo extends AbstractI18nMojo {
     private void checkSameKeys() {
         getLogger().logSection("Identical keys with different values:");
         for (KeyExtractor.FindResultPair same : extractor.getSameKeyResults()) {
-            getLogger().log(extractor.keyOf(same.getResult1()) + "':");
+            getLogger().log("'" + extractor.keyOf(same.getResult1()) + "'");
             getLogger().log(location(same.getResult1()));
             getLogger().log(location(same.getResult2()));
         }
     }
 
-    private String location(FindResult findResult) {
-        return findResult.getSource().getAbsolutePath() + " (" + findResult.getSource().getName() + ":" + findResult.getLine() + ")";
-    }
-
     private void checkSameDefaultValues() {
         getLogger().logSection("Identical values with different keys:");
         for (KeyExtractor.FindResultPair same : extractor.getSameValueResults()) {
-            getLogger().log(extractor.keyOf(same.getResult1()) + "' / '" + extractor.keyOf(same.getResult2()) + "':");
+            getLogger().log("'" + extractor.keyOf(same.getResult1()) + "' / '" + extractor.keyOf(same.getResult2()) + "'");
             getLogger().log(location(same.getResult1()));
             getLogger().log(location(same.getResult2()));
         }
@@ -110,20 +103,9 @@ public class ExtractKeysMojo extends AbstractI18nMojo {
     private void checkUnmessagedStrings() {
         getLogger().logSection("Texts that are not messagized:");
         for (FindResult negative : extractor.getNegatives()) {
-            getLogger().log(pad(extractor.keyOf(negative).replace('\n', ' ').replace('\r', ' ')) + " at " + location(negative));
+            getLogger().log(pad(extractor.keyOf(negative).replace('\n', ' ').replace('\r', ' ')));
+            getLogger().log(location(negative));
         }
     }
 
-    private String pad(String s) {
-        if (s.length() >= 30) {
-            s = s.substring(0, 26) + "...'";
-        }
-        if (s.length() < 30) {
-            s += "'";
-        }
-        while (s.length() < 30) {
-            s += " ";
-        }
-        return "'" + s;
-    }
 }

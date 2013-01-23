@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import stni.languager.FindResult;
+import stni.languager.SourcePosition;
+
 /**
  *
  */
@@ -44,8 +47,10 @@ public class FindRegexAction extends AbstractContentReadingCrawlAction {
                     finds.add(group(matcher, i));
                 }
                 results.add(new FindResult(
-                        file, matcher.start(), matcher.end(),
-                        lineOfPosition(matcher.start()), columnOfPosition(matcher.start()), finds));
+                        new SourcePosition(
+                                file, matcher.start(), matcher.end(),
+                                lineOfPosition(matcher.start()), columnOfPosition(matcher.start())),
+                        finds));
             }
         }
     }

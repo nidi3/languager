@@ -26,7 +26,8 @@ public class DelegatingLogger {
     }
 
     public void logSection(String message) {
-        log("****************** " + message);
+        log("");
+        log("******************************* " + message);
     }
 
     public boolean isEmpty() {

@@ -9,6 +9,8 @@ import java.util.List;
 import org.junit.Test;
 
 import stni.languager.BaseTest;
+import stni.languager.FindResult;
+import stni.languager.SourcePosition;
 
 /**
  *
@@ -18,24 +20,32 @@ public class FindRegexActionTest extends BaseTest {
     public void testFindMsgStrings() throws Exception {
         File base = fromTestDir("");
         FileCrawler crawler = new FileCrawler(new CrawlPattern(base, "*.html", "*2*,inner*,p*", "utf-8"));
-        List<FindResult> res = crawler.crawl(new FindRegexAction("<msg key='(.*?)'>(.*?)</msg>",null, null)).getResults();
+        List<FindResult> res = crawler.crawl(new FindRegexAction("<msg key='(.*?)'>(.*?)</msg>", null, null)).getResults();
         assertEquals(2, res.size());
-        assertEquals(2, res.get(0).getFindings().size());
-        assertEquals("key1", res.get(0).getFindings().get(0));
-        assertEquals("default1", res.get(0).getFindings().get(1));
-        assertEquals(3, res.get(0).getLine());
-        assertEquals(15, res.get(0).getColumn());
-        assertEquals("key3", res.get(1).getFindings().get(0));
-        assertEquals("default3", res.get(1).getFindings().get(1));
-        assertEquals(4, res.get(1).getLine());
-        assertEquals(15, res.get(1).getColumn());
+
+        final List<String> find0 = res.get(0).getFindings();
+        assertEquals(2, find0.size());
+        assertEquals("key1", find0.get(0));
+        assertEquals("default1", find0.get(1));
+
+        final SourcePosition pos0 = res.get(0).getPosition();
+        assertEquals(3, pos0.getLine());
+        assertEquals(15, pos0.getColumn());
+
+        final List<String> find1 = res.get(1).getFindings();
+        assertEquals("key3", find1.get(0));
+        assertEquals("default3", find1.get(1));
+
+        final SourcePosition pos1 = res.get(1).getPosition();
+        assertEquals(4, pos1.getLine());
+        assertEquals(15, pos1.getColumn());
     }
 
     @Test
     public void testFindRawStrings() throws Exception {
         File base = fromTestDir("");
-        FileCrawler crawler = new FileCrawler(new CrawlPattern(base, "test.html",null, "utf-8"));
-        List<FindResult> res = crawler.crawl(new FindRegexAction(">(.*?)<",null, EnumSet.of(FindRegexAction.Flag.TRIM))).getResults();
+        FileCrawler crawler = new FileCrawler(new CrawlPattern(base, "test.html", null, "utf-8"));
+        List<FindResult> res = crawler.crawl(new FindRegexAction(">(.*?)<", null, EnumSet.of(FindRegexAction.Flag.TRIM))).getResults();
         assertEquals(4, res.size());
         assertEquals("Test1", res.get(0).getFindings().get(0).trim());
         assertEquals("default1", res.get(1).getFindings().get(0).trim());

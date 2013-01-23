@@ -14,6 +14,9 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.classworlds.ClassWorld;
 
+import stni.languager.FindResult;
+import stni.languager.SourcePosition;
+
 /**
  * @phase generate-resources
  */
@@ -104,5 +107,27 @@ public abstract class AbstractI18nMojo extends AbstractMojo {
         } catch (Exception ex) {
             throw new MojoExecutionException(ex.toString(), ex);
         }
+    }
+
+    protected String location(FindResult findResult) {
+        final SourcePosition pos = findResult.getPosition();
+        return pad() + pos.getSource().getAbsolutePath() + ":[" + pos.getLine() + "," + pos.getColumn() + "]";
+    }
+
+    protected String pad() {
+        return "                                ";
+    }
+
+    protected String pad(String s) {
+        if (s.length() >= 30) {
+            s = s.substring(0, 26) + "...'";
+        }
+        if (s.length() < 30) {
+            s += "'";
+        }
+        while (s.length() < 30) {
+            s += " ";
+        }
+        return "'" + s;
     }
 }

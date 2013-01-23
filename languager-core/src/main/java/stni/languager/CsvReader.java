@@ -1,5 +1,6 @@
 package stni.languager;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -9,7 +10,7 @@ import java.util.List;
 /**
  *
  */
-class CsvReader {
+class CsvReader implements Closeable {
     private static final char EOI = (char) -1;
     private final Reader in;
     private final char separator;
@@ -88,4 +89,7 @@ class CsvReader {
         return c == EOI;
     }
 
+    public void close() throws IOException {
+        in.close();
+    }
 }

@@ -1,5 +1,10 @@
 package stni.languager;
 
+import static stni.languager.Message.Status.FOUND;
+import static stni.languager.Message.Status.MANUAL;
+import static stni.languager.Message.Status.NOT_FOUND;
+import static stni.languager.Message.Status.ofSymbol;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -9,11 +14,6 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.springframework.util.StringUtils;
-
-import static stni.languager.Message.Status.FOUND;
-import static stni.languager.Message.Status.MANUAL;
-import static stni.languager.Message.Status.NOT_FOUND;
-import static stni.languager.Message.Status.ofSymbol;
 
 /**
  *
@@ -66,17 +66,18 @@ public class MessagesWriter {
                             String key = line.get(KEY_COLUMN);
                             Message.Status status = statusOfLine(line);
                             String defaultValue = line.size() > DEFAULT_COLUMN ? line.get(DEFAULT_COLUMN) : null;
-                            Message entry = msgs.get(key);
-                            if (entry == null) {
-                                entry = new Message(key, status == MANUAL ? MANUAL : NOT_FOUND, defaultValue);
-                                msgs.put(key, entry);
+                            Message foundMessage = msgs.get(key);
+                            Message merged;
+                            if (foundMessage == null) {
+                                merged = new Message(key, status == MANUAL ? MANUAL : NOT_FOUND, defaultValue);
                             } else {
-                                entry = new Message(key, status == MANUAL ? MANUAL : FOUND, entry.getDefaultValue() == null ? defaultValue : entry.getDefaultValue());
-                                msgs.put(key, entry);
+                                merged = new Message(key, status == MANUAL ? MANUAL : FOUND, foundMessage.getDefaultValue() == null ? defaultValue : foundMessage.getDefaultValue());
+                                merged.addOccurrences(foundMessage.getOccurrences());
                             }
                             for (int i = FIRST_LANG_COLUMN; i < Math.min(firstParts.size(), line.size()); i++) {
-                                entry.addValue(firstParts.get(i), line.get(i));
+                                merged.addValue(firstParts.get(i), line.get(i));
                             }
+                            msgs.put(key, merged);
                         }
                     }
                 }

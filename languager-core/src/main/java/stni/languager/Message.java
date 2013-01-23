@@ -1,6 +1,9 @@
 package stni.languager;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -38,6 +41,7 @@ public class Message {
     private final Status status;
     private final String defaultValue;
     private final Map<String, String> values = new HashMap<String, String>();
+    private final List<SourcePosition> occurrences = new ArrayList<SourcePosition>();
 
     public Message(String key, Status status, String defaultValue) {
         this.key = key;
@@ -50,6 +54,7 @@ public class Message {
         for (Map.Entry<String, String> value : values.entrySet()) {
             res.addValue(value.getKey(), transformer.transform(value.getKey(), value.getValue()));
         }
+        res.addOccurrences(getOccurrences());
         return res;
     }
 
@@ -73,8 +78,20 @@ public class Message {
         return getDefaultValue() != null ? getDefaultValue() : getValues().get("");
     }
 
+    public List<SourcePosition> getOccurrences() {
+        return occurrences;
+    }
+
     public void addValue(String lang, String value) {
         values.put(lang, value);
+    }
+
+    public void addOccurrence(SourcePosition occurrence) {
+        occurrences.add(occurrence);
+    }
+
+    public void addOccurrences(Collection<SourcePosition> occurrences) {
+        this.occurrences.addAll(occurrences);
     }
 
     @Override
@@ -109,6 +126,7 @@ public class Message {
                 ", status=" + status +
                 ", defaultValue='" + defaultValue + '\'' +
                 ", values=" + values +
+                ", occurrences=" + occurrences +
                 '}';
     }
 }

@@ -7,6 +7,8 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
 import stni.languager.CsvAnalyzer;
+import stni.languager.FindResult;
+import stni.languager.OccurrenceReader;
 
 /**
  * @author stni
@@ -23,14 +25,20 @@ public class DefaultLanguageCheckMojo extends AbstractI18nMojo {
         try {
             initLogger();
 
+            final OccurrenceReader occurrenceReader = new OccurrenceReader(getCsvFile());
             final CsvAnalyzer analyzer = new CsvAnalyzer(getCsvFile(), csvEncoding, csvSeparator);
-            final List<List<String>> diffs = analyzer.compareDefaultValueWithLanguage(language);
+            final List<FindResult> diffs = analyzer.compareDefaultValueWithLanguage(language);
             if (!diffs.isEmpty()) {
                 getLogger().logSection("Entries with difference between default value and " + language + ":");
-                for (List<String> diff : diffs) {
-                    getLogger().log(analyzer.getKey(diff));
+                for (FindResult diff : diffs) {
+                    getLogger().log(pad(analyzer.getKey(diff)));
+                    getLogger().log(location(diff));
+                    for (String occurrence : occurrenceReader.getOccurrences(analyzer.getKey(diff))) {
+                        getLogger().log(pad() + occurrence);
+                    }
                 }
             }
+
         } catch (IOException e) {
             throw new MojoExecutionException("Error analyzing CSV", e);
         }

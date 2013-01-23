@@ -1,5 +1,7 @@
 package stni.languager;
 
+import static stni.languager.Message.Status.FOUND;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -7,9 +9,6 @@ import java.util.*;
 import stni.languager.crawl.CrawlPattern;
 import stni.languager.crawl.FileCrawler;
 import stni.languager.crawl.FindRegexAction;
-import stni.languager.crawl.FindResult;
-
-import static stni.languager.Message.Status.FOUND;
 
 /**
  *
@@ -17,9 +16,9 @@ import static stni.languager.Message.Status.FOUND;
 public class KeyExtractor {
     private static final Comparator<FindResult> FIND_RESULT_SORTER = new Comparator<FindResult>() {
         public int compare(FindResult result1, FindResult result2) {
-            int res = result1.getSource().compareTo(result2.getSource());
+            int res = result1.getPosition().getSource().compareTo(result2.getPosition().getSource());
             if (res == 0) {
-                res = result1.getLine() - result2.getLine();
+                res = result1.getPosition().getLine() - result2.getPosition().getLine();
             }
             return res;
         }
@@ -63,17 +62,22 @@ public class KeyExtractor {
             } else {
                 checkSameKey(result);
                 checkSameValue(result);
-                messages.put(key, new Message(key, FOUND, valueOf(result)));
+                Message message = messages.get(key);
+                if (message == null) {
+                    message = new Message(key, FOUND, valueOf(result));
+                }
+                message.addOccurrence(result.getPosition());
+                messages.put(key, message);
                 saveResultByLocation(result);
             }
         }
     }
 
     private void saveResultByLocation(FindResult result) {
-        List<FindResult> resultListByLocation = resultsByLocation.get(result.getSource());
+        List<FindResult> resultListByLocation = resultsByLocation.get(result.getPosition().getSource());
         if (resultListByLocation == null) {
             resultListByLocation = new ArrayList<FindResult>();
-            resultsByLocation.put(result.getSource(), resultListByLocation);
+            resultsByLocation.put(result.getPosition().getSource(), resultListByLocation);
         }
         resultListByLocation.add(result);
     }
@@ -136,12 +140,13 @@ public class KeyExtractor {
     private void removeInnerNegatives() {
         for (Iterator<FindResult> iter = negatives.values().iterator(); iter.hasNext(); ) {
             final FindResult result = iter.next();
-            final List<FindResult> sourceResults = resultsByLocation.get(result.getSource());
+            final SourcePosition pos = result.getPosition();
+            final List<FindResult> sourceResults = resultsByLocation.get(pos.getSource());
             if (sourceResults != null) {
                 for (FindResult sourceResult : sourceResults) {
-                    if (sourceResult.getStart() > result.getStart()) {
+                    if (sourceResult.getPosition().getStart() > pos.getStart()) {
                         break;
-                    } else if (sourceResult.getEnd() >= result.getEnd()) {
+                    } else if (sourceResult.getPosition().getEnd() >= pos.getEnd()) {
                         iter.remove();
                         break;
                     }
@@ -165,7 +170,8 @@ public class KeyExtractor {
     }
 
     public String location(FindResult result) {
-        return result.getSource() + ":" + result.getLine() + ":" + result.getColumn();
+        final SourcePosition pos = result.getPosition();
+        return pos.getSource() + ":" + pos.getLine() + ":" + pos.getColumn();
     }
 
     public String valueOf(FindResult result) {
@@ -200,5 +206,8 @@ public class KeyExtractor {
 
         MessagesWriter writer = new MessagesWriter(encoding, separator);
         writer.write(file, messages);
+
+        final OccurrenceWriter occurrenceWriter = new OccurrenceWriter();
+        occurrenceWriter.write(file, messages.values());
     }
 }

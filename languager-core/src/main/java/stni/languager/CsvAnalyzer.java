@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,27 +11,27 @@ import java.util.List;
  *
  */
 public class CsvAnalyzer {
+    private final File file;
     private final CsvReader reader;
     private final List<String> first;
 
     public CsvAnalyzer(File file, String encoding, char csvSeparator) throws IOException {
-        this(new InputStreamReader(new FileInputStream(file), encoding), csvSeparator);
-    }
-
-    public CsvAnalyzer(Reader reader, char csvSeparator) throws IOException {
-        this.reader = new CsvReader(reader, csvSeparator);
+        this.file = file;
+        reader = new CsvReader(new InputStreamReader(new FileInputStream(file), encoding), csvSeparator);
         first = this.reader.readLine();
     }
 
-    public List<List<String>> compareDefaultValueWithLanguage(String lang) throws IOException {
+    public List<FindResult> compareDefaultValueWithLanguage(String lang) throws IOException {
         int index = getColumnOfLang(lang);
-        List<List<String>> res = new ArrayList<List<String>>();
+        List<FindResult> res = new ArrayList<FindResult>();
+        int lineNum = 1;
         while (!reader.isEndOfInput()) {
             final List<String> line = reader.readLine();
+            lineNum++;
             if (line.size() > index) {
                 final String entry = line.get(index);
                 if (entry.length() > 0 && !getDefaultValue(line).equals(entry)) {
-                    res.add(line);
+                    res.add(new FindResult(new SourcePosition(file, 0, 0, lineNum, 1), line));
                 }
             }
         }
@@ -47,15 +46,19 @@ public class CsvAnalyzer {
         return index;
     }
 
-    public String getKey(List<String> line) {
-        return line.get(MessagesWriter.KEY_COLUMN);
+    public String getKey(FindResult result) {
+        return result.getFindings().get(MessagesWriter.KEY_COLUMN);
     }
 
-    public String getDefaultValue(List<String> line) {
+    private String getDefaultValue(List<String> line) {
         return line.get(MessagesWriter.DEFAULT_COLUMN);
     }
 
-    public String getValue(List<String> line, String lang) {
-        return line.get(getColumnOfLang(lang));
+    public String getDefaultValue(FindResult result) {
+        return getDefaultValue(result.getFindings());
+    }
+
+    public String getValue(FindResult result, String lang) {
+        return result.getFindings().get(getColumnOfLang(lang));
     }
 }
