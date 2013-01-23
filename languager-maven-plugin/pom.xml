@@ -5,7 +5,7 @@
     <parent>
         <groupId>stni.languager</groupId>
         <artifactId>languager</artifactId>
-        <version>1.0.18-SNAPSHOT</version>
+        <version>1.0.18</version>
     </parent>
 
     <artifactId>languager-maven-plugin</artifactId>
@@ -70,7 +70,7 @@
         <dependency>
             <groupId>stni.languager</groupId>
             <artifactId>languager-core</artifactId>
-            <version>1.0.18-SNAPSHOT</version>
+            <version>1.0.18</version>
         </dependency>
 
     </dependencies>
