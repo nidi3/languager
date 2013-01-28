@@ -4,7 +4,7 @@
 
     <groupId>stni.languager</groupId>
     <artifactId>languager</artifactId>
-    <version>1.0.19-SNAPSHOT</version>
+    <version>1.0.19</version>
     <packaging>pom</packaging>
 
     <modules>
