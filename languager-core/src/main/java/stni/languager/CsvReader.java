@@ -10,7 +10,7 @@ import java.util.List;
 /**
  *
  */
-class CsvReader implements Closeable {
+public class CsvReader implements Closeable {
     private static final char EOI = (char) -1;
     private final Reader in;
     private final char separator;

@@ -8,7 +8,7 @@ import java.util.List;
 /**
  *
  */
-class CsvWriter implements Closeable {
+public class CsvWriter implements Closeable {
     private final Writer out;
     private final char separator;
     private boolean start;

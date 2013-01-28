@@ -21,6 +21,9 @@ import stni.languager.SourcePosition;
  * @phase generate-resources
  */
 public abstract class AbstractI18nMojo extends AbstractMojo {
+
+    private static final int PAD_LEN = 50;
+
     /**
      * @parameter expression="${searchBasedir}"
      * @required
@@ -119,13 +122,13 @@ public abstract class AbstractI18nMojo extends AbstractMojo {
     }
 
     protected String pad(String s) {
-        if (s.length() >= 30) {
-            s = s.substring(0, 26) + "...'";
+        if (s.length() >= PAD_LEN) {
+            s = s.substring(0, PAD_LEN - 4) + "...'";
         }
-        if (s.length() < 30) {
+        if (s.length() < PAD_LEN) {
             s += "'";
         }
-        while (s.length() < 30) {
+        while (s.length() < PAD_LEN) {
             s += " ";
         }
         return "'" + s;

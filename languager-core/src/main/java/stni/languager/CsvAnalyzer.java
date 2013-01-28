@@ -1,9 +1,7 @@
 package stni.languager;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,21 +10,22 @@ import java.util.List;
  */
 public class CsvAnalyzer {
     private final File file;
-    private final CsvReader reader;
-    private final List<String> first;
+    private final List<List<String>> contents;
 
-    public CsvAnalyzer(File file, String encoding, char csvSeparator) throws IOException {
+    public CsvAnalyzer(File file, List<List<String>> contents) throws IOException {
         this.file = file;
-        reader = new CsvReader(new InputStreamReader(new FileInputStream(file), encoding), csvSeparator);
-        first = this.reader.readLine();
+        this.contents = contents;
+    }
+
+    public CsvAnalyzer(File file, String encoding, char separator) throws IOException {
+        this(file, Util.readCsvFile(file, encoding, separator));
     }
 
     public List<FindResult> compareDefaultValueWithLanguage(String lang) throws IOException {
         int index = getColumnOfLang(lang);
         List<FindResult> res = new ArrayList<FindResult>();
         int lineNum = 1;
-        while (!reader.isEndOfInput()) {
-            final List<String> line = reader.readLine();
+        for (List<String> line : contents.subList(1, contents.size())) {
             lineNum++;
             if (line.size() > index) {
                 final String entry = line.get(index);
@@ -39,7 +38,7 @@ public class CsvAnalyzer {
     }
 
     private int getColumnOfLang(String lang) {
-        int index = first.indexOf(lang);
+        int index = contents.get(0).indexOf(lang);
         if (index < 0) {
             throw new IllegalArgumentException("No column with language '" + lang + "' found");
         }
