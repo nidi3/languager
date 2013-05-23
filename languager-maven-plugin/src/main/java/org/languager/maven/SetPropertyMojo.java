@@ -7,7 +7,7 @@ import org.apache.maven.plugin.MojoFailureException;
 /**
  * @goal setProperty
  */
-public class SetProperty extends AbstractMojo {
+public class SetPropertyMojo extends AbstractMojo {
     /**
      * @parameter expression="${properties}"
      * @required

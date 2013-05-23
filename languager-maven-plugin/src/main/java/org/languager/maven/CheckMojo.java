@@ -19,13 +19,11 @@ import stni.languager.Util;
 public class CheckMojo extends AbstractI18nMojo {
     /**
      * @parameter expression="${checkLinks}"
-     * @required
      */
     private boolean checkLinks;
 
     /**
      * @parameter expression="${checkDefaultsEqual}"
-     * @required
      */
     private String checkDefaultsEqual;
 
