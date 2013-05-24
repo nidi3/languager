@@ -1,6 +1,5 @@
 package org.languager.maven;
 
-import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
@@ -18,6 +17,11 @@ public class SpringRunnerMojo extends AbstractI18nMojo {
      */
     protected File contextFile;
 
+    /**
+     * @parameter expression="${failOnError}"
+     */
+    protected boolean failOnError;
+
     public void execute() throws MojoExecutionException, MojoFailureException {
         getLog().info("******************** If using IntelliJ, consider using grep console plugin ********************");
         LogConfiguration.useLogConfig("logback-blue.xml");
@@ -30,9 +34,14 @@ public class SpringRunnerMojo extends AbstractI18nMojo {
             getLog().info("Started. Stopping spring context...");
             context.stop();
             getLog().info("Stopped.");
-        } catch (DependencyResolutionRequiredException e) {
-            throw new MojoExecutionException("Problem", e);
+        } catch (Exception e) {
+            if (failOnError) {
+                throw new MojoExecutionException("Problem running spring", e);
+            } else {
+                getLog().error("Problem running spring, but continuing", e);
+            }
+        } finally {
+            LogConfiguration.useLogConfig("logback.xml");
         }
-        LogConfiguration.useLogConfig("logback.xml");
     }
 }
