@@ -12,6 +12,10 @@
         <module>languager-maven-plugin</module>
     </modules>
 
+    <properties>
+        <dependency.locations.enabled>false</dependency.locations.enabled>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
