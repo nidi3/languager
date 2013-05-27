@@ -42,7 +42,12 @@ public class ConsoleInputMojo extends AbstractMojo {
     protected boolean showIfTargetSet;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
-        if (showIfTargetSet || project.getProperties().getProperty(targetProperty) == null) {
+        String property = project.getProperties().getProperty(targetProperty);
+        if (property == null) {
+            property = System.getProperty(targetProperty);
+            project.getProperties().setProperty(targetProperty, property);
+        }
+        if (showIfTargetSet || property == null) {
             System.out.print(prompt);
             if (defaultValue != null) {
                 System.out.print(" (" + defaultValue + ")");
