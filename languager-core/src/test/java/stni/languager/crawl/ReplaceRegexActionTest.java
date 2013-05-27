@@ -1,17 +1,16 @@
 package stni.languager.crawl;
 
+import org.junit.Assert;
+import org.junit.Test;
+import stni.languager.BaseTest;
+import stni.languager.PropertiesWriter;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Properties;
 import java.util.regex.Matcher;
-
-import org.junit.Assert;
-import org.junit.Test;
-
-import stni.languager.BaseTest;
-import stni.languager.PropertiesWriter;
 
 /**
  *

@@ -1,7 +1,6 @@
 package stni.languager;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,7 +8,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Properties;
 
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  *
@@ -24,7 +24,7 @@ public class PropertiesWriterTest extends BaseTest {
     @Test
     public void testWrite() throws Exception {
         File base = fromTestDir("");
-        writer.write(Util.reader(new File(base, "existing.csv"), Util.ISO), tempDir, "testMsg");
+        writer.write(Util.reader(new File(base, "existing.csv"), Util.ISO), "", tempDir, "testMsg");
         Properties prop = new Properties();
         prop.load(new FileInputStream(new File(tempDir, "testMsg_en.properties")));
         assertEquals(2, prop.size());
@@ -42,7 +42,7 @@ public class PropertiesWriterTest extends BaseTest {
         writer.write(new StringReader("key,status,default value,en,de\n" +
                 "key1,+,\"\n\n1\n\n\",,\n" +
                 "key2,*,a,,\n" +
-                "key3,+,\"\na\rb\r\nc\",,\n"), tempDir, "newlines");
+                "key3,+,\"\na\rb\r\nc\",,\n"), "", tempDir, "newlines");
         Properties prop = new Properties();
         prop.load(new FileInputStream(new File(tempDir, "newlines_en.properties")));
         assertEquals("1 ", prop.getProperty("key1"));
