@@ -2,6 +2,7 @@ package org.languager.maven;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import java.io.File;
@@ -28,7 +29,7 @@ public class SpringRunnerMojo extends AbstractI18nMojo {
 
         try {
             extendPluginClasspath(project.getCompileClasspathElements());
-
+            System.setProperty("basedir", project.getBasedir().getAbsolutePath());
             final FileSystemXmlApplicationContext context = new FileSystemXmlApplicationContext("file:" + contextFile.getAbsolutePath());
             context.start();
             getLog().info("Started. Stopping spring context...");
