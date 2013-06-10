@@ -33,7 +33,8 @@ public class PropertiesWriter {
             BufferedWriter[] out = new BufferedWriter[langs];
 
             for (int i = 0; i < langs; i++) {
-                out[i] = Util.writer(new File(outputDir, basename + (i == 0 ? "" : "_" + first.get(i + DEFAULT_COLUMN)) + ".properties"), Util.ISO);
+                String langAppendix = (i == 0 ? "" : ("_" + first.get(i + DEFAULT_COLUMN)));
+                out[i] = Util.writer(new File(outputDir, basename + langAppendix + ".properties"), Util.ISO);
                 out[i].write("# This file is generated from " + source);
                 out[i].newLine();
                 out[i].write("# Do NOT edit manually!");
