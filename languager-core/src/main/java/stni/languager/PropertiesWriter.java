@@ -1,20 +1,13 @@
 package stni.languager;
 
 
+import java.io.*;
+import java.util.List;
+import java.util.regex.Pattern;
+
 import static stni.languager.Message.Status.NOT_FOUND;
 import static stni.languager.MessagesWriter.DEFAULT_COLUMN;
 import static stni.languager.MessagesWriter.KEY_COLUMN;
-import static stni.languager.MessagesWriter.STATUS_COLUMN;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  *
@@ -29,18 +22,22 @@ public class PropertiesWriter {
     }
 
     public void write(File csv, String csvEncoding, File outputDir, String basename) throws IOException {
-        write(new InputStreamReader(new FileInputStream(csv), csvEncoding), outputDir, basename);
+        write(new InputStreamReader(new FileInputStream(csv), csvEncoding), omitCommonPrefix(outputDir, csv), outputDir, basename);
     }
 
-    public void write(Reader csv, File outputDir, String basename) throws IOException {
+    public void write(Reader csv, String source, File outputDir, String basename) throws IOException {
         BufferedReader in = new BufferedReader(csv);
         if (in.ready()) {
             List<String> first = new CsvReader(in.readLine().toLowerCase(), csvSeparator).readLine();
             int langs = first.size() - DEFAULT_COLUMN;
             BufferedWriter[] out = new BufferedWriter[langs];
-            out[0] = Util.writer(new File(outputDir, basename + ".properties"), Util.ISO);
-            for (int i = 1; i < langs; i++) {
-                out[i] = Util.writer(new File(outputDir, basename + "_" + first.get(i + DEFAULT_COLUMN) + ".properties"), Util.ISO);
+
+            for (int i = 0; i < langs; i++) {
+                out[i] = Util.writer(new File(outputDir, basename + (i == 0 ? "" : "_" + first.get(i + DEFAULT_COLUMN)) + ".properties"), Util.ISO);
+                out[i].write("# This file is generated from " + source);
+                out[i].newLine();
+                out[i].write("# Do NOT edit manually!");
+                out[i].newLine();
             }
             CsvReader reader = new CsvReader(in, csvSeparator);
             while (in.ready() && !reader.isEndOfInput()) {
@@ -65,5 +62,15 @@ public class PropertiesWriter {
             }
         }
         in.close();
+    }
+
+    private String omitCommonPrefix(File prefix, File toOmit) {
+        String prefixPath = prefix.getAbsolutePath();
+        String omitPath = toOmit.getAbsolutePath();
+        int i = 0;
+        while (prefixPath.charAt(i) == omitPath.charAt(i) && i < Math.min(prefixPath.length(), omitPath.length()) - 1) {
+            i++;
+        }
+        return omitPath.substring(i);
     }
 }
