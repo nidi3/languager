@@ -9,8 +9,8 @@ import static stni.languager.Message.Status.ofSymbol;
 /**
  *
  */
-public class MessagesUtil {
-    private MessagesUtil() {
+public class MessageIO {
+    private MessageIO() {
     }
 
     static final int KEY_COLUMN = 0;

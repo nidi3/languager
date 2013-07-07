@@ -11,7 +11,6 @@ import java.util.List;
  */
 public class MessagesReader implements Closeable {
     private final CsvReader in;
-    private final char csvSeparator;
     private final List<String> firstParts;
 
     public MessagesReader(File f, String encoding, char csvSeparator) throws IOException {
@@ -20,10 +19,9 @@ public class MessagesReader implements Closeable {
 
     public MessagesReader(Reader reader, char csvSeparator) throws IOException {
         this.in = new CsvReader(reader, csvSeparator);
-        this.csvSeparator = csvSeparator;
         firstParts = toLowerCase(in.readLine());
         if (!checkFirstParts()) {
-            throw new RuntimeException("The first line of the CSV file must start with '" + MessagesUtil.MINIMAL_FIRST_LINE + "' but starts with '" + firstParts + "'");
+            throw new RuntimeException("The first line of the CSV file must start with '" + MessageIO.MINIMAL_FIRST_LINE + "' but starts with '" + firstParts + "'");
         }
     }
 
@@ -35,11 +33,11 @@ public class MessagesReader implements Closeable {
     }
 
     private boolean checkFirstParts() {
-        if (firstParts.size() < MessagesUtil.MINIMAL_FIRST_LINE.size()) {
+        if (firstParts.size() < MessageIO.MINIMAL_FIRST_LINE.size()) {
             return false;
         }
-        for (int i = 0; i < MessagesUtil.MINIMAL_FIRST_LINE.size(); i++) {
-            if (!MessagesUtil.MINIMAL_FIRST_LINE.get(i).equalsIgnoreCase(firstParts.get(i))) {
+        for (int i = 0; i < MessageIO.MINIMAL_FIRST_LINE.size(); i++) {
+            if (!MessageIO.MINIMAL_FIRST_LINE.get(i).equalsIgnoreCase(firstParts.get(i))) {
                 return false;
             }
         }

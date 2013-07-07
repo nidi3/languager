@@ -32,7 +32,7 @@ public class MessagesWriter {
     }
 
     private List<String> defaultFirstParts() throws IOException {
-        List<String> res = new ArrayList<String>(MessagesUtil.MINIMAL_FIRST_LINE);
+        List<String> res = new ArrayList<String>(MessageIO.MINIMAL_FIRST_LINE);
         res.add("en");
         res.add("de");
         return res;
@@ -45,9 +45,9 @@ public class MessagesWriter {
             while (!in.isEndOfInput()) {
                 List<String> line = in.readLine();
                 if (line.size() > 1 || line.get(0).trim().length() > 0) {
-                    String key = line.get(MessagesUtil.KEY_COLUMN);
-                    Message.Status status = MessagesUtil.statusOfLine(line);
-                    String defaultValue = line.size() > MessagesUtil.DEFAULT_COLUMN ? line.get(MessagesUtil.DEFAULT_COLUMN) : null;
+                    String key = line.get(MessageIO.KEY_COLUMN);
+                    Message.Status status = MessageIO.statusOfLine(line);
+                    String defaultValue = line.size() > MessageIO.DEFAULT_COLUMN ? line.get(MessageIO.DEFAULT_COLUMN) : null;
                     Message foundMessage = msgs.get(key);
                     Message merged;
                     if (foundMessage == null) {
@@ -56,7 +56,7 @@ public class MessagesWriter {
                         merged = new Message(key, status == MANUAL ? MANUAL : FOUND, foundMessage.getDefaultValue() == null ? defaultValue : foundMessage.getDefaultValue());
                         merged.addOccurrences(foundMessage.getOccurrences());
                     }
-                    for (int i = MessagesUtil.FIRST_LANG_COLUMN; i < Math.min(in.getFirstParts().size(), line.size()); i++) {
+                    for (int i = MessageIO.FIRST_LANG_COLUMN; i < Math.min(in.getFirstParts().size(), line.size()); i++) {
                         merged.addValue(in.getFirstParts().get(i), line.get(i));
                     }
                     msgs.put(key, merged);
@@ -85,7 +85,7 @@ public class MessagesWriter {
             out.writeField("" + msg.getStatus().getSymbol());
             out.writeField(simpleOccurrencesOf(msg));
             out.writeField(msg.getDefaultValueOrLang());
-            for (int i = MessagesUtil.FIRST_LANG_COLUMN; i < langs.size(); i++) {
+            for (int i = MessageIO.FIRST_LANG_COLUMN; i < langs.size(); i++) {
                 out.writeField(msg.getValues().get(langs.get(i)));
             }
             out.writeEndOfLine();
