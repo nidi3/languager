@@ -1,4 +1,4 @@
-package org.languager.maven;
+package stni.languager.maven;
 
 /**
  *

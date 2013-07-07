@@ -1,4 +1,4 @@
-package org.languager.maven;
+package stni.languager.maven;
 
 import java.io.File;
 import java.io.FileInputStream;

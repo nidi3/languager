@@ -1,4 +1,4 @@
-package org.languager.maven;
+package stni.languager.maven;
 
 import static stni.languager.crawl.FindRegexAction.Flag.TRIM;
 import static stni.languager.crawl.FindRegexAction.Flag.WITH_EMPTY;
