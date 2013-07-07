@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import static stni.languager.Message.Status.NOT_FOUND;
-import static stni.languager.MessagesWriter.DEFAULT_COLUMN;
-import static stni.languager.MessagesWriter.KEY_COLUMN;
 
 /**
  *
@@ -26,43 +24,58 @@ public class PropertiesWriter {
     }
 
     public void write(Reader csv, String source, File outputDir, String basename) throws IOException {
-        BufferedReader in = new BufferedReader(csv);
-        if (in.ready()) {
-            List<String> first = new CsvReader(in.readLine().toLowerCase(), csvSeparator).readLine();
-            int langs = first.size() - DEFAULT_COLUMN;
-            BufferedWriter[] out = new BufferedWriter[langs];
-
-            for (int i = 0; i < langs; i++) {
-                String langAppendix = (i == 0 ? "" : ("_" + first.get(i + DEFAULT_COLUMN)));
-                out[i] = Util.writer(new File(outputDir, basename + langAppendix + ".properties"), Util.ISO);
-                out[i].write("# This file is generated from " + source);
-                out[i].newLine();
-                out[i].write("# Do NOT edit manually!");
-                out[i].newLine();
+        MessagesReader in = null;
+        try {
+            in = new MessagesReader(csv, csvSeparator);
+            if (!in.isEndOfInput()) {
+                BufferedWriter[] out = initPropertiesFiles(source, outputDir, basename, in.getFirstParts());
+                writePropertiesFiles(in, out);
+                closePropertiesFiles(out);
             }
-            CsvReader reader = new CsvReader(in, csvSeparator);
-            while (in.ready() && !reader.isEndOfInput()) {
-                List<String> line = reader.readLine();
-                String key = line.get(KEY_COLUMN);
-                Message.Status status = MessagesWriter.statusOfLine(line);
-                if (status != NOT_FOUND) {
-                    String defaultValue = line.size() > DEFAULT_COLUMN ? line.get(DEFAULT_COLUMN) : ("?" + key + "?");
-                    for (int i = 0; i < langs; i++) {
-                        String val = defaultValue;
-                        if (line.size() > i + DEFAULT_COLUMN && line.get(i + DEFAULT_COLUMN).length() > 0) {
-                            val = line.get(i + DEFAULT_COLUMN);
-                        }
-                        String s = NEW_LINE.matcher(val).replaceAll(" \\\\\r\n");
-                        out[i].write(key + "=" + s);
-                        out[i].newLine();
+        } catch (IOException e) {
+            in.close();
+        }
+    }
+
+    private void closePropertiesFiles(BufferedWriter[] out) throws IOException {
+        for (int i = 0; i < out.length; i++) {
+            out[i].close();
+        }
+    }
+
+    private BufferedWriter[] initPropertiesFiles(String source, File outputDir, String basename, List<String> firstParts) throws IOException {
+        int langs = firstParts.size() - MessagesUtil.DEFAULT_COLUMN;
+        BufferedWriter[] out = new BufferedWriter[langs];
+
+        for (int i = 0; i < out.length; i++) {
+            String langAppendix = (i == 0 ? "" : ("_" + firstParts.get(i + MessagesUtil.DEFAULT_COLUMN)));
+            out[i] = Util.writer(new File(outputDir, basename + langAppendix + ".properties"), Util.ISO);
+            out[i].write("# This file is generated from " + source);
+            out[i].newLine();
+            out[i].write("# Do NOT edit manually!");
+            out[i].newLine();
+        }
+        return out;
+    }
+
+    private void writePropertiesFiles(MessagesReader in, BufferedWriter[] out) throws IOException {
+        while (!in.isEndOfInput()) {
+            List<String> line = in.readLine();
+            String key = line.get(MessagesUtil.KEY_COLUMN);
+            Message.Status status = MessagesUtil.statusOfLine(line);
+            if (status != NOT_FOUND) {
+                String defaultValue = line.size() > MessagesUtil.DEFAULT_COLUMN ? line.get(MessagesUtil.DEFAULT_COLUMN) : ("?" + key + "?");
+                for (int i = 0; i < out.length; i++) {
+                    String val = defaultValue;
+                    if (line.size() > i + MessagesUtil.DEFAULT_COLUMN && line.get(i + MessagesUtil.DEFAULT_COLUMN).length() > 0) {
+                        val = line.get(i + MessagesUtil.DEFAULT_COLUMN);
                     }
+                    String s = NEW_LINE.matcher(val).replaceAll(" \\\\\r\n");
+                    out[i].write(key + "=" + s);
+                    out[i].newLine();
                 }
             }
-            for (int i = 0; i < langs; i++) {
-                out[i].close();
-            }
         }
-        in.close();
     }
 
     private String omitCommonPrefix(File prefix, File toOmit) {

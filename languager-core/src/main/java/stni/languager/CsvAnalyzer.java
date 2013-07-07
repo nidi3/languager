@@ -46,11 +46,11 @@ public class CsvAnalyzer {
     }
 
     public String getKey(FindResult result) {
-        return result.getFindings().get(MessagesWriter.KEY_COLUMN);
+        return result.getFindings().get(MessagesUtil.KEY_COLUMN);
     }
 
     private String getDefaultValue(List<String> line) {
-        return line.get(MessagesWriter.DEFAULT_COLUMN);
+        return line.get(MessagesUtil.DEFAULT_COLUMN);
     }
 
     public String getDefaultValue(FindResult result) {
