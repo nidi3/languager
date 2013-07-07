@@ -39,10 +39,10 @@ public class PropertiesWriterTest extends BaseTest {
 
     @Test
     public void testNewlines() throws Exception {
-        writer.write(new StringReader("key,status,default value,en,de\n" +
-                "key1,+,\"\n\n1\n\n\",,\n" +
-                "key2,*,a,,\n" +
-                "key3,+,\"\na\rb\r\nc\",,\n"), "", tempDir, "newlines");
+        writer.write(new StringReader("key,status,occurs,default value,en,de\n" +
+                "key1,+,,\"\n\n1\n\n\",,\n" +
+                "key2,*,,a,,\n" +
+                "key3,+,,\"\na\rb\r\nc\",,\n"), "", tempDir, "newlines");
         Properties prop = new Properties();
         prop.load(new FileInputStream(new File(tempDir, "newlines_en.properties")));
         assertEquals("1 ", prop.getProperty("key1"));

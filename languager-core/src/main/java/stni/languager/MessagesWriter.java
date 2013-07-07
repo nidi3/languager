@@ -83,11 +83,26 @@ public class MessagesWriter {
         for (Message msg : msgs) {
             out.writeField(msg.getKey());
             out.writeField("" + msg.getStatus().getSymbol());
+            out.writeField(simpleOccurrencesOf(msg));
             out.writeField(msg.getDefaultValueOrLang());
             for (int i = MessagesUtil.FIRST_LANG_COLUMN; i < langs.size(); i++) {
                 out.writeField(msg.getValues().get(langs.get(i)));
             }
             out.writeEndOfLine();
         }
+    }
+
+    private String simpleOccurrencesOf(Message msg) {
+        boolean first = true;
+        String res = "";
+        for (SourcePosition occ : msg.getOccurrences()) {
+            if (first) {
+                first = false;
+            } else {
+                res += ",";
+            }
+            res += occ.getSource().getName();
+        }
+        return res;
     }
 }
