@@ -88,7 +88,7 @@ public class MessagesWriter {
             for (int i = MessageIO.FIRST_LANG_COLUMN; i < langs.size(); i++) {
                 out.writeField(msg.getValues().get(langs.get(i)));
             }
-            out.writeEndOfLine();
+            out.newLine();
         }
     }
 

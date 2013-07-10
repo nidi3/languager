@@ -21,7 +21,7 @@ public class OccurrenceWriter {
                 for (SourcePosition occurrence : message.getOccurrences()) {
                     writer.writeField(occurrence.getSource().getAbsolutePath() + ":[" + occurrence.getLine() + "," + occurrence.getColumn() + "]");
                 }
-                writer.writeEndOfLine();
+                writer.newLine();
             }
         } finally {
             Util.closeSilently(writer);

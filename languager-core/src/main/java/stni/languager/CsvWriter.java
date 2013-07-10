@@ -8,7 +8,7 @@ import java.util.List;
 /**
  *
  */
-public class CsvWriter implements Closeable {
+public class CsvWriter extends AbstractLowlevelWriter {
     private final Writer out;
     private final char separator;
     private boolean start;
@@ -31,15 +31,7 @@ public class CsvWriter implements Closeable {
         }
     }
 
-
-    public void writeLine(List<String> values) throws IOException {
-        for (String value : values) {
-            writeField(value);
-        }
-        writeEndOfLine();
-    }
-
-    public void writeEndOfLine() throws IOException {
+    public void newLine() throws IOException {
         out.write("\r\n");
         start = true;
     }
