@@ -5,7 +5,7 @@ import java.io.File;
 /**
  *
  */
-public class SourcePosition {
+public class SourcePosition implements Comparable<SourcePosition>{
     private final File source;
     private final int start;
     private final int end;
@@ -43,5 +43,10 @@ public class SourcePosition {
     @Override
     public String toString() {
         return getSource().getAbsolutePath() + ":[" + getLine() + "," + getColumn() + "]";
+    }
+
+    @Override
+    public int compareTo(SourcePosition o) {
+        return source.getName().compareTo(o.source.getName());
     }
 }

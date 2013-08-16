@@ -1,10 +1,6 @@
 package stni.languager;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
@@ -41,7 +37,7 @@ public class Message {
     private final Status status;
     private final String defaultValue;
     private final Map<String, String> values = new HashMap<String, String>();
-    private final List<SourcePosition> occurrences = new ArrayList<SourcePosition>();
+    private final SortedSet<SourcePosition> occurrences = new TreeSet<SourcePosition>();
 
     public Message(String key, Status status, String defaultValue) {
         this.key = key;
@@ -78,7 +74,7 @@ public class Message {
         return getDefaultValue() != null ? getDefaultValue() : getValues().get("");
     }
 
-    public List<SourcePosition> getOccurrences() {
+    public Set<SourcePosition> getOccurrences() {
         return occurrences;
     }
 
