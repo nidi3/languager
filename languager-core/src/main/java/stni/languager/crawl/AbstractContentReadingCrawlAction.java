@@ -11,7 +11,7 @@ import java.util.List;
 /**
  *
  */
-public abstract class AbstractContentReadingCrawlAction implements CrawlAction {
+public abstract class AbstractContentReadingCrawlAction extends AbstractCrawlAction {
 
     private Integer[] newlines;
 
@@ -49,12 +49,4 @@ public abstract class AbstractContentReadingCrawlAction implements CrawlAction {
         final int line = lineOfPosition(pos);
         return line == 1 ? pos : pos - newlines[line - 2];
     }
-
-    protected File target(File source, File sourceBaseDir, File targetDir) {
-        String relativeSource = source.getParentFile().getAbsolutePath().substring(sourceBaseDir.getAbsolutePath().length());
-        File target = new File(targetDir, relativeSource);
-        target.mkdirs();
-        return target;
-    }
-
 }
