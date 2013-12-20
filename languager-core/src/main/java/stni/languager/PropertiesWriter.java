@@ -44,11 +44,9 @@ public class PropertiesWriter {
     }
 
     private BufferedWriter[] initPropertiesFiles(String source, File outputDir, String basename, List<String> firstParts) throws IOException {
-        int langs = firstParts.size() - MessageIO.DEFAULT_COLUMN;
-        BufferedWriter[] out = new BufferedWriter[langs];
-
+        BufferedWriter[] out = new BufferedWriter[MessageIO.languageCount(firstParts)];
         for (int i = 0; i < out.length; i++) {
-            String langAppendix = (i == 0 ? "" : ("_" + firstParts.get(i + MessageIO.DEFAULT_COLUMN)));
+            String langAppendix = (i == 0 ? "" : ("_" + MessageIO.readValue(firstParts, i, null)));
             out[i] = Util.writer(new File(outputDir, basename + langAppendix + ".properties"), Util.ISO);
             out[i].write("# This file is generated from " + source);
             out[i].newLine();
@@ -61,15 +59,12 @@ public class PropertiesWriter {
     private void writePropertiesFiles(MessagesReader in, BufferedWriter[] out) throws IOException {
         while (!in.isEndOfInput()) {
             List<String> line = in.readLine();
-            String key = line.get(MessageIO.KEY_COLUMN);
-            Message.Status status = MessageIO.statusOfLine(line);
+            String key = MessageIO.readKey(line);
+            Message.Status status = MessageIO.readStatus(line);
             if (status != NOT_FOUND) {
-                String defaultValue = line.size() > MessageIO.DEFAULT_COLUMN ? line.get(MessageIO.DEFAULT_COLUMN) : ("?" + key + "?");
+                String defaultValue = MessageIO.readDefaultValue(line, ("?" + key + "?"));
                 for (int i = 0; i < out.length; i++) {
-                    String val = defaultValue;
-                    if (line.size() > i + MessageIO.DEFAULT_COLUMN && line.get(i + MessageIO.DEFAULT_COLUMN).length() > 0) {
-                        val = line.get(i + MessageIO.DEFAULT_COLUMN);
-                    }
+                    String val = MessageIO.readValue(line, i, defaultValue);
                     String s = NEW_LINE.matcher(val).replaceAll(" \\\\\r\n");
                     out[i].write(key + "=" + s);
                     out[i].newLine();

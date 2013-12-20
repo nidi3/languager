@@ -20,9 +20,7 @@ public class MessagesReader implements Closeable {
     public MessagesReader(Reader reader, char csvSeparator) throws IOException {
         this.in = new CsvReader(reader, csvSeparator);
         firstParts = toLowerCase(in.readLine());
-        if (!checkFirstParts()) {
-            throw new RuntimeException("The first line of the CSV file must start with '" + MessageIO.MINIMAL_FIRST_LINE + "' but starts with '" + firstParts + "'");
-        }
+        MessageIO.checkFirstLine(firstParts);
     }
 
     private List<String> toLowerCase(List<String> strings) {
@@ -32,17 +30,6 @@ public class MessagesReader implements Closeable {
         return strings;
     }
 
-    private boolean checkFirstParts() {
-        if (firstParts.size() < MessageIO.MINIMAL_FIRST_LINE.size()) {
-            return false;
-        }
-        for (int i = 0; i < MessageIO.MINIMAL_FIRST_LINE.size(); i++) {
-            if (!MessageIO.MINIMAL_FIRST_LINE.get(i).equalsIgnoreCase(firstParts.get(i))) {
-                return false;
-            }
-        }
-        return true;
-    }
 
     public List<String> readLine() throws IOException {
         return in.readLine();
