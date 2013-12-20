@@ -37,6 +37,10 @@ public class CsvReader implements Closeable {
         return value;
     }
 
+    public MessageLine readMessageLine() throws IOException {
+        return MessageLine.of(readLine());
+    }
+
     public List<String> readLine() throws IOException {
         List<String> res = new ArrayList<String>();
         StringBuilder curr = new StringBuilder();

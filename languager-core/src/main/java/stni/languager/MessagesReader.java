@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class MessagesReader implements Closeable {
     private final CsvReader in;
-    private final List<String> firstParts;
+    private final MessageLine firstParts;
 
     public MessagesReader(File f, String encoding, char csvSeparator) throws IOException {
         this(Util.reader(f, encoding), csvSeparator);
@@ -19,8 +19,8 @@ public class MessagesReader implements Closeable {
 
     public MessagesReader(Reader reader, char csvSeparator) throws IOException {
         this.in = new CsvReader(reader, csvSeparator);
-        firstParts = toLowerCase(in.readLine());
-        MessageIO.checkFirstLine(firstParts);
+        firstParts = MessageLine.of(toLowerCase(in.readLine()));
+        firstParts.checkFirstLine();
     }
 
     private List<String> toLowerCase(List<String> strings) {
@@ -30,16 +30,15 @@ public class MessagesReader implements Closeable {
         return strings;
     }
 
-
-    public List<String> readLine() throws IOException {
-        return in.readLine();
+    public MessageLine readLine() throws IOException {
+        return MessageLine.of(in.readLine());
     }
 
     public boolean isEndOfInput() {
         return in.isEndOfInput();
     }
 
-    public List<String> getFirstParts() {
+    public MessageLine getFirstParts() {
         return firstParts;
     }
 

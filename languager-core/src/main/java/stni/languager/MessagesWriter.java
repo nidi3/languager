@@ -30,24 +30,24 @@ public class MessagesWriter {
     }
 
     public void write(File f, SortedMap<String, Message> msgs) throws IOException {
-        List<String> firstParts = (f.exists() && f.length() > 0) ? readMessages(f, msgs) : defaultFirstParts();
+        MessageLine firstParts = (f.exists() && f.length() > 0) ? readMessages(f, msgs) : defaultFirstParts();
         writeMessages(f, firstParts, msgs);
     }
 
-    private List<String> defaultFirstParts() throws IOException {
-        return MessageIO.firstLine("en", "de");
+    private MessageLine defaultFirstParts() throws IOException {
+        return MessageLine.firstLine("en", "de");
     }
 
-    private List<String> readMessages(File f, SortedMap<String, Message> msgs) throws IOException {
+    private MessageLine readMessages(File f, SortedMap<String, Message> msgs) throws IOException {
         MessagesReader in = null;
         try {
             in = new MessagesReader(f, encoding, csvSeparator);
             while (!in.isEndOfInput()) {
-                List<String> line = in.readLine();
-                if (line.size() > 1 || line.get(0).trim().length() > 0) {
-                    String key = MessageIO.readKey(line);
-                    Message.Status status = MessageIO.readStatus(line);
-                    String defaultValue = MessageIO.readDefaultValue(line, null);
+                MessageLine line = in.readLine();
+                if (line.isEmpty()) {
+                    String key = line.readKey();
+                    Message.Status status = line.readStatus();
+                    String defaultValue = line.readDefaultValue(null);
                     Message foundMessage = msgs.get(key);
                     Message merged;
                     if (foundMessage == null) {
@@ -56,7 +56,7 @@ public class MessagesWriter {
                         merged = new Message(key, status == MANUAL ? MANUAL : FOUND, foundMessage.getDefaultValue() == null ? defaultValue : foundMessage.getDefaultValue());
                         merged.addOccurrences(foundMessage.getOccurrences());
                     }
-                    MessageIO.readValuesIntoMessage(line,in.getFirstParts(),merged);
+                    line.readValuesIntoMessage(in.getFirstParts(), merged);
                     msgs.put(key, merged);
                 }
             }
@@ -66,7 +66,7 @@ public class MessagesWriter {
         }
     }
 
-    private void writeMessages(File f, List<String> firstParts, SortedMap<String, Message> msgs) throws IOException {
+    private void writeMessages(File f, MessageLine firstParts, SortedMap<String, Message> msgs) throws IOException {
         CsvWriter out = null;
         try {
             out = new CsvWriter(Util.writer(f, encoding), csvSeparator);
@@ -77,13 +77,13 @@ public class MessagesWriter {
         }
     }
 
-    private void writeLine(CsvWriter out, List<String> langs, Collection<Message> msgs) throws IOException {
+    private void writeLine(CsvWriter out, MessageLine langs, Collection<Message> msgs) throws IOException {
         for (Message msg : msgs) {
             out.writeField(msg.getKey());
             out.writeField("" + msg.getStatus().getSymbol());
             out.writeField(simpleOccurrencesOf(msg));
             out.writeField(msg.getDefaultValueOrLang());
-            MessageIO.writeValues(langs, msg, out);
+            langs.writeValues(msg, out);
             out.writeEndOfLine();
         }
     }

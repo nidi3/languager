@@ -2,7 +2,6 @@ package stni.languager;
 
 
 import java.io.*;
-import java.util.List;
 import java.util.regex.Pattern;
 
 import static stni.languager.Message.Status.NOT_FOUND;
@@ -43,10 +42,10 @@ public class PropertiesWriter {
         }
     }
 
-    private BufferedWriter[] initPropertiesFiles(String source, File outputDir, String basename, List<String> firstParts) throws IOException {
-        BufferedWriter[] out = new BufferedWriter[MessageIO.languageCount(firstParts)];
+    private BufferedWriter[] initPropertiesFiles(String source, File outputDir, String basename, MessageLine firstParts) throws IOException {
+        BufferedWriter[] out = new BufferedWriter[firstParts.languageCount()];
         for (int i = 0; i < out.length; i++) {
-            String langAppendix = (i == 0 ? "" : ("_" + MessageIO.readValue(firstParts, i, null)));
+            String langAppendix = (i == 0 ? "" : ("_" + firstParts.readValue(i, null)));
             out[i] = Util.writer(new File(outputDir, basename + langAppendix + ".properties"), Util.ISO);
             out[i].write("# This file is generated from " + source);
             out[i].newLine();
@@ -58,13 +57,13 @@ public class PropertiesWriter {
 
     private void writePropertiesFiles(MessagesReader in, BufferedWriter[] out) throws IOException {
         while (!in.isEndOfInput()) {
-            List<String> line = in.readLine();
-            String key = MessageIO.readKey(line);
-            Message.Status status = MessageIO.readStatus(line);
+            MessageLine line = in.readLine();
+            String key = line.readKey();
+            Message.Status status = line.readStatus();
             if (status != NOT_FOUND) {
-                String defaultValue = MessageIO.readDefaultValue(line, ("?" + key + "?"));
+                String defaultValue = line.readDefaultValue(("?" + key + "?"));
                 for (int i = 0; i < out.length; i++) {
-                    String val = MessageIO.readValue(line, i, defaultValue);
+                    String val = line.readValue(i, defaultValue);
                     String s = NEW_LINE.matcher(val).replaceAll(" \\\\\r\n");
                     out[i].write(key + "=" + s);
                     out[i].newLine();

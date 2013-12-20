@@ -1,7 +1,7 @@
 package stni.languager.check;
 
 import stni.languager.FindResult;
-import stni.languager.MessageIO;
+import stni.languager.MessageLine;
 import stni.languager.SourcePosition;
 import stni.languager.Util;
 
@@ -15,9 +15,9 @@ import java.util.List;
  */
 public class CsvAnalyzer {
     private final File file;
-    private final List<List<String>> contents;
+    private final List<MessageLine> contents;
 
-    public CsvAnalyzer(File file, List<List<String>> contents) throws IOException {
+    public CsvAnalyzer(File file, List<MessageLine> contents) throws IOException {
         this.file = file;
         this.contents = contents;
     }
@@ -51,11 +51,11 @@ public class CsvAnalyzer {
     }
 
     public String getKey(FindResult result) {
-        return MessageIO.readKey(result.getFindings());
+        return MessageLine.readKey(result.getFindings());
     }
 
     private String getDefaultValue(List<String> line) {
-        return MessageIO.readDefaultValue(line, null);
+        return MessageLine.readDefaultValue(line, null);
     }
 
     public String getDefaultValue(FindResult result) {

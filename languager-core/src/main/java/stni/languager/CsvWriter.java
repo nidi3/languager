@@ -31,9 +31,8 @@ public class CsvWriter implements Closeable {
         }
     }
 
-
-    public void writeLine(List<String> values) throws IOException {
-        for (String value : values) {
+    public void writeLine(MessageLine line) throws IOException {
+        for (String value : line) {
             writeField(value);
         }
         writeEndOfLine();

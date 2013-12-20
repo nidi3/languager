@@ -36,13 +36,13 @@ public class Util {
         }
     }
 
-    public static List<List<String>> readCsvFile(File file, String encoding, char separator) throws IOException {
-        final List<List<String>> res = new ArrayList<List<String>>();
+    public static List<MessageLine> readCsvFile(File file, String encoding, char separator) throws IOException {
+        final List<MessageLine> res = new ArrayList<MessageLine>();
         CsvReader in = null;
         try {
             in = new CsvReader(new InputStreamReader(new FileInputStream(file), encoding), separator);
             while (!in.isEndOfInput()) {
-                res.add(in.readLine());
+                res.add(MessageLine.of(in.readLine()));
             }
             return res;
         } finally {
