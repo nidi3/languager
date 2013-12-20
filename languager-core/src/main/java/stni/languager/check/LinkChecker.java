@@ -1,4 +1,4 @@
-package stni.languager;
+package stni.languager.check;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +18,8 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
+import stni.languager.FindResult;
+import stni.languager.SourcePosition;
 
 /**
  *

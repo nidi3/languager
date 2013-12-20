@@ -1,4 +1,9 @@
-package stni.languager;
+package stni.languager.check;
+
+import stni.languager.FindResult;
+import stni.languager.MessageIO;
+import stni.languager.SourcePosition;
+import stni.languager.Util;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,11 +51,11 @@ public class CsvAnalyzer {
     }
 
     public String getKey(FindResult result) {
-        return result.getFindings().get(MessageIO.KEY_COLUMN);
+        return MessageIO.readKey(result.getFindings());
     }
 
     private String getDefaultValue(List<String> line) {
-        return line.get(MessageIO.DEFAULT_COLUMN);
+        return MessageIO.readDefaultValue(line, null);
     }
 
     public String getDefaultValue(FindResult result) {

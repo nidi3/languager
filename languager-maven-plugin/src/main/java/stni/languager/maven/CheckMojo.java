@@ -6,9 +6,9 @@ import java.util.List;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
-import stni.languager.CsvAnalyzer;
+import stni.languager.check.CsvAnalyzer;
 import stni.languager.FindResult;
-import stni.languager.LinkChecker;
+import stni.languager.check.LinkChecker;
 import stni.languager.OccurrenceReader;
 import stni.languager.Util;
 
