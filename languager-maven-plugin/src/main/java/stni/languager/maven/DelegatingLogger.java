@@ -3,11 +3,12 @@ package stni.languager.maven;
 import java.io.PrintWriter;
 
 import org.apache.maven.plugin.logging.Log;
+import stni.languager.Logger;
 
 /**
  *
  */
-public class DelegatingLogger {
+public class DelegatingLogger implements Logger {
     private final PrintWriter printWriter;
     private final Log log;
 
@@ -16,6 +17,7 @@ public class DelegatingLogger {
         this.log = log;
     }
 
+    @Override
     public void log(String message) {
         if (printWriter != null) {
             printWriter.println(message);
@@ -25,6 +27,7 @@ public class DelegatingLogger {
         }
     }
 
+    @Override
     public void logSection(String message) {
         log("");
         log("******************************* " + message);
