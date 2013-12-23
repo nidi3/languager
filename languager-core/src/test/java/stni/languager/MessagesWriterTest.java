@@ -1,16 +1,16 @@
 package stni.languager;
 
-import static org.junit.Assert.assertEquals;
-import static stni.languager.Message.Status.FOUND;
-import static stni.languager.Message.Status.NOT_FOUND;
+import org.codehaus.plexus.util.FileUtils;
+import org.junit.Test;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.codehaus.plexus.util.FileUtils;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static stni.languager.Message.Status.FOUND;
+import static stni.languager.Message.Status.NOT_FOUND;
 
 /**
  *
@@ -20,7 +20,7 @@ public class MessagesWriterTest extends BaseTest {
     public void testWriteNew() throws Exception {
         MessagesWriter writer = new MessagesWriter(Util.ISO, ',');
         File f = File.createTempFile("pre", "post");
-        List<Message> msgs = new ArrayList<Message>();
+        List<Message> msgs = new ArrayList<>();
         msgs.add(new Message("key2", FOUND, "val,ue2"));
         msgs.add(new Message("key3", NOT_FOUND, "val\"ue3"));
         msgs.add(new Message("key1", FOUND, null));
@@ -42,7 +42,7 @@ public class MessagesWriterTest extends BaseTest {
         FileUtils.copyFile(new File(base, "existing.csv"), f);
 
         MessagesWriter writer = new MessagesWriter(Util.ISO, ',');
-        List<Message> msgs = new ArrayList<Message>();
+        List<Message> msgs = new ArrayList<>();
         msgs.add(new Message("key1", FOUND, "val\"ue3"));
         msgs.add(new Message("key3", FOUND, null));
         writer.write(f, msgs);

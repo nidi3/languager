@@ -1,19 +1,18 @@
 package stni.languager.maven;
 
-import static stni.languager.crawl.FindRegexAction.Flag.TRIM;
-import static stni.languager.crawl.FindRegexAction.Flag.WITH_EMPTY;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import stni.languager.FindResult;
+import stni.languager.KeyExtractor;
+import stni.languager.crawl.CrawlPattern;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-
-import stni.languager.FindResult;
-import stni.languager.KeyExtractor;
-import stni.languager.crawl.CrawlPattern;
+import static stni.languager.crawl.FindRegexAction.Flag.TRIM;
+import static stni.languager.crawl.FindRegexAction.Flag.WITH_EMPTY;
 
 /**
  * @author stni
@@ -52,7 +51,7 @@ public class ExtractKeysMojo extends AbstractI18nMojo {
                 checkSameKeys();
             }
 
-            extendPluginClasspath(project.getCompileClasspathElements());
+            extendClasspathWithCompile();
             extractor.extractFromClasspath(propertyLocations);
 
             if (removeNewLines) {
@@ -102,7 +101,7 @@ public class ExtractKeysMojo extends AbstractI18nMojo {
 
     private void checkUnmessagedStrings() {
         getLogger().logSection("Texts that are not messagized:");
-        for (FindResult negative : extractor.getNegatives()) {
+        for (FindResult<List<String>> negative : extractor.getNegatives()) {
             getLogger().log(pad(extractor.keyOf(negative).replace('\n', ' ').replace('\r', ' ')));
             getLogger().log(location(negative));
         }

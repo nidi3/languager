@@ -13,19 +13,15 @@ import java.util.Map;
  *
  */
 public class OccurrenceReader {
-    private final Map<String, List<String>> occurrences = new HashMap<String, List<String>>();
+    private final Map<String, List<String>> occurrences = new HashMap<>();
 
     public OccurrenceReader(File file) throws IOException {
         final File occFile = OccurrenceWriter.fromMessagesFile(file);
-        CsvReader reader = null;
-        try {
-            reader = new CsvReader(new InputStreamReader(new FileInputStream(occFile), "utf-8"), ';');
+        try (CsvReader reader = new CsvReader(new InputStreamReader(new FileInputStream(occFile), "utf-8"), ';')) {
             while (!reader.isEndOfInput()) {
                 final List<String> line = reader.readLine();
                 occurrences.put(line.get(0), line.subList(1, line.size()));
             }
-        } finally {
-            Util.closeSilently(reader);
         }
     }
 

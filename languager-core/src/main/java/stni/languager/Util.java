@@ -1,14 +1,8 @@
 package stni.languager;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import org.codehaus.plexus.util.FileUtils;
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,27 +20,20 @@ public class Util {
         return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), encoding));
     }
 
-    public static void closeSilently(Closeable c) {
-        if (c != null) {
-            try {
-                c.close();
-            } catch (IOException e) {
-                //ignore
-            }
-        }
-    }
-
     public static List<MessageLine> readCsvFile(File file, String encoding, char separator) throws IOException {
-        final List<MessageLine> res = new ArrayList<MessageLine>();
-        CsvReader in = null;
-        try {
-            in = new CsvReader(new InputStreamReader(new FileInputStream(file), encoding), separator);
+        final List<MessageLine> res = new ArrayList<>();
+        try (CsvReader in = new CsvReader(new InputStreamReader(new FileInputStream(file), encoding), separator)) {
             while (!in.isEndOfInput()) {
                 res.add(MessageLine.of(in.readLine()));
             }
             return res;
-        } finally {
-            Util.closeSilently(in);
         }
     }
+
+    public static List<File> getFiles(File dir, String includes, String excludes) throws IOException {
+        @SuppressWarnings("unchecked")
+        List<File> files = FileUtils.getFiles(dir, includes, excludes);
+        return files;
+    }
+
 }

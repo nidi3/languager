@@ -1,19 +1,19 @@
 package stni.languager.crawl;
 
+import stni.languager.FindResult;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import stni.languager.FindResult;
-
 /**
  *
  */
 public class QuotingAwareFindRegexAction extends AbstractContentReadingCrawlAction {
 
-    private final List<FindResult> results = new ArrayList<FindResult>();
+    private final List<FindResult> results = new ArrayList<>();
     private Integer[] quoteStart;
     private Integer[] quoteEnd;
 
@@ -38,8 +38,8 @@ public class QuotingAwareFindRegexAction extends AbstractContentReadingCrawlActi
 //    }
 
     private void findQuotes(String content) {
-        List<Integer> quoteStartList = new ArrayList<Integer>();
-        List<Integer> quoteEndList = new ArrayList<Integer>();
+        List<Integer> quoteStartList = new ArrayList<>();
+        List<Integer> quoteEndList = new ArrayList<>();
         boolean inQuote = false;
         for (int i = 0; i < content.length(); i++) {
             if (!inQuote && content.charAt(i) == '<') {

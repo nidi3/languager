@@ -13,9 +13,7 @@ public class OccurrenceWriter {
 
     public void write(File file, Collection<Message> messages) throws IOException {
         final File occFile = fromMessagesFile(file);
-        CsvWriter writer = null;
-        try {
-            writer = new CsvWriter(new OutputStreamWriter(new FileOutputStream(occFile), "utf-8"), ';');
+        try (CsvWriter writer = new CsvWriter(new OutputStreamWriter(new FileOutputStream(occFile), "utf-8"), ';')) {
             for (Message message : messages) {
                 writer.writeField(message.getKey());
                 for (SourcePosition occurrence : message.getOccurrences()) {
@@ -23,8 +21,6 @@ public class OccurrenceWriter {
                 }
                 writer.writeEndOfLine();
             }
-        } finally {
-            Util.closeSilently(writer);
         }
     }
 

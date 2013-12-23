@@ -22,7 +22,7 @@ public class MessagesWriter {
     }
 
     public void write(File f, List<Message> msgs) throws IOException {
-        SortedMap<String, Message> entries = new TreeMap<String, Message>();
+        SortedMap<String, Message> entries = new TreeMap<>();
         for (Message msg : msgs) {
             entries.put(msg.getKey(), msg);
         }
@@ -34,14 +34,12 @@ public class MessagesWriter {
         writeMessages(f, firstParts, msgs);
     }
 
-    private MessageLine defaultFirstParts() throws IOException {
+    private MessageLine defaultFirstParts() {
         return MessageLine.firstLine("en", "de");
     }
 
     private MessageLine readMessages(File f, SortedMap<String, Message> msgs) throws IOException {
-        MessagesReader in = null;
-        try {
-            in = new MessagesReader(f, encoding, csvSeparator);
+        try (MessagesReader in = new MessagesReader(f, encoding, csvSeparator)) {
             while (!in.isEndOfInput()) {
                 MessageLine line = in.readLine();
                 if (!line.isEmpty()) {
@@ -61,19 +59,13 @@ public class MessagesWriter {
                 }
             }
             return in.getFirstParts();
-        } finally {
-            Util.closeSilently(in);
         }
     }
 
     private void writeMessages(File f, MessageLine firstParts, SortedMap<String, Message> msgs) throws IOException {
-        CsvWriter out = null;
-        try {
-            out = new CsvWriter(Util.writer(f, encoding), csvSeparator);
+        try (CsvWriter out = new CsvWriter(Util.writer(f, encoding), csvSeparator)) {
             out.writeLine(firstParts);
             writeLine(out, firstParts, msgs.values());
-        } finally {
-            Util.closeSilently(out);
         }
     }
 

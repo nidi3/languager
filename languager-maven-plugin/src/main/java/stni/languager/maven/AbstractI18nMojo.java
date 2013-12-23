@@ -1,21 +1,17 @@
 package stni.languager.maven;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.util.List;
-
+import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.classworlds.ClassWorld;
-
 import stni.languager.FindResult;
 import stni.languager.SourcePosition;
+
+import java.io.*;
+import java.util.List;
 
 /**
  * @phase generate-resources
@@ -110,6 +106,16 @@ public abstract class AbstractI18nMojo extends AbstractMojo {
         } catch (Exception ex) {
             throw new MojoExecutionException(ex.toString(), ex);
         }
+    }
+
+    protected List<String> compileClasspath() throws DependencyResolutionRequiredException {
+        @SuppressWarnings("unchecked")
+        final List<String> compileClasspathElements = project.getCompileClasspathElements();
+        return compileClasspathElements;
+    }
+
+    protected void extendClasspathWithCompile() throws DependencyResolutionRequiredException, MojoExecutionException {
+        extendPluginClasspath(compileClasspath());
     }
 
     protected String location(FindResult findResult) {

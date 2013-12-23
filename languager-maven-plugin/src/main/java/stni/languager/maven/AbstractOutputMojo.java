@@ -1,7 +1,7 @@
 package stni.languager.maven;
 
 import org.apache.maven.plugin.MojoExecutionException;
-import org.codehaus.plexus.util.FileUtils;
+import stni.languager.Util;
 import stni.languager.crawl.CrawlAction;
 import stni.languager.crawl.CrawlPattern;
 import stni.languager.crawl.FileCrawler;
@@ -38,9 +38,9 @@ public abstract class AbstractOutputMojo extends AbstractI18nMojo {
      */
     protected File propertiesDirectory;
 
-    protected void writePerLangauge(boolean loadProperties) throws MojoExecutionException {
+    protected void writePerLanguage(boolean loadProperties) throws MojoExecutionException {
         try {
-            List<File> props = FileUtils.getFiles(propertiesDirectory, baseName + "_*" + PROPERTIES, null);
+            List<File> props = Util.getFiles(propertiesDirectory, baseName + "_*" + PROPERTIES, null);
             for (File prop : props) {
                 int pos = prop.getName().indexOf("_");
                 String lang = prop.getName().substring(pos + 1, prop.getName().length() - PROPERTIES.length());

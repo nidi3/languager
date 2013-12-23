@@ -36,8 +36,8 @@ public class Message {
     private final String key;
     private final Status status;
     private final String defaultValue;
-    private final Map<String, String> values = new HashMap<String, String>();
-    private final SortedSet<SourcePosition> occurrences = new TreeSet<SourcePosition>();
+    private final Map<String, String> values = new HashMap<>();
+    private final SortedSet<SourcePosition> occurrences = new TreeSet<>();
 
     public Message(String key, Status status, String defaultValue) {
         this.key = key;

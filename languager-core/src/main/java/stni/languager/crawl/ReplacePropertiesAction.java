@@ -25,12 +25,8 @@ public class ReplacePropertiesAction extends AbstractContentReadingCrawlAction {
             content = content.replace((String) property.getKey(), (String) property.getValue());
         }
         File target = target(file, basedir, targetDir);
-        OutputStreamWriter out = null;
-        try {
-            out = new OutputStreamWriter(new FileOutputStream(new File(target, file.getName())), pattern.getEncoding());
+        try (OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(new File(target, file.getName())), pattern.getEncoding())) {
             out.write(content);
-        } finally {
-            Util.closeSilently(out);
         }
     }
 

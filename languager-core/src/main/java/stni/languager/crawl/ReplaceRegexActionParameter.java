@@ -2,6 +2,7 @@ package stni.languager.crawl;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.regex.Matcher;
@@ -46,7 +47,7 @@ public class ReplaceRegexActionParameter {
             }
 
             private List<String> extractParameters(Matcher m) {
-                List<String> parameters = new ArrayList<String>();
+                List<String> parameters = new ArrayList<>();
                 for (int i = 2; i < m.groupCount(); i++) {
                     String group = m.group(i);
                     if (group == null) {
@@ -55,9 +56,7 @@ public class ReplaceRegexActionParameter {
                         if (parameterSeparator == null || parameterSeparator.length() == 0) {
                             parameters.add(group);
                         } else {
-                            for (String part : group.split(parameterSeparator)) {
-                                parameters.add(part);
-                            }
+                            Collections.addAll(parameters, group.split(parameterSeparator));
                         }
                     }
                 }

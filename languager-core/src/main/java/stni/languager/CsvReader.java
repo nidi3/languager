@@ -42,7 +42,7 @@ public class CsvReader implements Closeable {
     }
 
     public List<String> readLine() throws IOException {
-        List<String> res = new ArrayList<String>();
+        List<String> res = new ArrayList<>();
         StringBuilder curr = new StringBuilder();
         boolean quote = false;
         f:

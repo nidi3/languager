@@ -1,6 +1,5 @@
 package stni.languager;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
@@ -9,7 +8,7 @@ import java.util.List;
 /**
  *
  */
-public class MessagesReader implements Closeable {
+public class MessagesReader implements AutoCloseable {
     private final CsvReader in;
     private final MessageLine firstParts;
 

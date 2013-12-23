@@ -31,7 +31,7 @@ public class MessageLine implements Iterable<String> {
     }
 
     public static MessageLine firstLine(String... languages) {
-        ArrayList<String> res = new ArrayList<String>(MINIMAL_FIRST_LINE);
+        ArrayList<String> res = new ArrayList<>(MINIMAL_FIRST_LINE);
         res.addAll(Arrays.asList(languages));
         return new MessageLine(res);
     }
@@ -95,7 +95,7 @@ public class MessageLine implements Iterable<String> {
         }
     }
 
-    public void readValuesIntoMessage(MessageLine languages, Message msg) throws IOException {
+    public void readValuesIntoMessage(MessageLine languages, Message msg) {
         for (int i = MessageLine.FIRST_LANG_COLUMN; i < Math.min(languages.line.size(), line.size()); i++) {
             msg.addValue(languages.line.get(i), line.get(i));
         }

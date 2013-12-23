@@ -17,7 +17,7 @@ public class CsvAnalyzer {
     private final File file;
     private final List<MessageLine> contents;
 
-    public CsvAnalyzer(File file, List<MessageLine> contents) throws IOException {
+    public CsvAnalyzer(File file, List<MessageLine> contents) {
         this.file = file;
         this.contents = contents;
     }
@@ -26,15 +26,15 @@ public class CsvAnalyzer {
         this(file, Util.readCsvFile(file, encoding, separator));
     }
 
-    public List<FindResult<MessageLine>> compareDefaultValueWithLanguage(String lang) throws IOException {
+    public List<FindResult<MessageLine>> compareDefaultValueWithLanguage(String lang) {
         int language = contents.get(0).findLang(lang);
-        List<FindResult<MessageLine>> res = new ArrayList<FindResult<MessageLine>>();
+        List<FindResult<MessageLine>> res = new ArrayList<>();
         int lineNum = 1;
         for (MessageLine line : contents.subList(1, contents.size())) {
             lineNum++;
             String entry = line.readValue(language, "");
             if (entry.length() > 0 && !entry.equals(line.readDefaultValue(null))) {
-                res.add(new FindResult<MessageLine>(new SourcePosition(file, 0, 0, lineNum, 1), line));
+                res.add(new FindResult<>(new SourcePosition(file, 0, 0, lineNum, 1), line));
             }
         }
         return res;

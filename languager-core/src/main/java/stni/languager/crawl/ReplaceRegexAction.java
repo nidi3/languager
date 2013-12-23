@@ -29,12 +29,8 @@ public class ReplaceRegexAction extends FindRegexAction {
         }
         matcher.appendTail(s);
         File target = target(file, basedir, parameter.getTargetDir());
-        OutputStreamWriter out = null;
-        try {
-            out = new OutputStreamWriter(new FileOutputStream(new File(target, file.getName())), pattern.getEncoding());
+        try (OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(new File(target, file.getName())), pattern.getEncoding())) {
             out.write(s.toString());
-        } finally {
-            Util.closeSilently(out);
         }
     }
 

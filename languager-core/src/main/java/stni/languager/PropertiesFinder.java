@@ -1,14 +1,10 @@
 package stni.languager;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.SortedMap;
-import java.util.TreeMap;
-
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+
+import java.io.IOException;
+import java.util.*;
 
 import static stni.languager.Message.Status.FOUND;
 
@@ -17,14 +13,14 @@ import static stni.languager.Message.Status.FOUND;
  */
 public class PropertiesFinder {
     public static final String PROPERTIES = ".properties";
-    private List<String> propertyLocations = new ArrayList<String>();
+    private List<String> propertyLocations = new ArrayList<>();
 
     public void addPropertyLocation(String location) {
         propertyLocations.add(location);
     }
 
     public SortedMap<String, Message> findProperties() throws IOException {
-        SortedMap<String, Message> messages = new TreeMap<String, Message>();
+        SortedMap<String, Message> messages = new TreeMap<>();
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         for (String propertyLocation : propertyLocations) {
             Resource[] resources = resolver.getResources(propertyLocation + "*" + PROPERTIES);

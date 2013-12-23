@@ -32,7 +32,7 @@ public class LinkChecker {
     private final Logger logger;
     private final HttpClient client;
 
-    public LinkChecker(File file, List<MessageLine> contents, Logger logger) throws IOException {
+    public LinkChecker(File file, List<MessageLine> contents, Logger logger) {
         this.file = file;
         this.contents = contents;
         this.logger = logger;
@@ -45,7 +45,7 @@ public class LinkChecker {
     public List<FindResult<String>> findBrokenLinks() {
         ExecutorService executor = Executors.newCachedThreadPool();
         final List<FindResult<String>> res = Collections.synchronizedList(new ArrayList<FindResult<String>>());
-        final Set<String> urls = new HashSet<String>();
+        final Set<String> urls = new HashSet<>();
         int lineNum = 1;
 
         for (MessageLine line : contents.subList(1, contents.size())) {
@@ -88,7 +88,7 @@ public class LinkChecker {
 
         public void run() {
             if (!isLinkValid(url)) {
-                results.add(new FindResult<String>(pos, url));
+                results.add(new FindResult<>(pos, url));
             }
         }
 

@@ -22,9 +22,9 @@ public class ReplaceKeysMojo extends AbstractOutputMojo {
         if (customizerClass != null) {
             getLog().info("Running customizer " + customizerClass);
             try {
-                extendPluginClasspath(project.getCompileClasspathElements());
+                extendClasspathWithCompile();
                 final Class<?> customizer = Class.forName(customizerClass.replace('/', '.'), true, Thread.currentThread().getContextClassLoader());
-                final Method main = customizer.getMethod("main", new Class[]{new String[0].getClass()});
+                final Method main = customizer.getMethod("main", new Class[]{String[].class});
                 main.invoke(null, (Object) new String[]{project.getBasedir().getAbsolutePath()});
             } catch (Exception e) {
                 throw new MojoExecutionException("Problem running customizer", e);
@@ -32,7 +32,7 @@ public class ReplaceKeysMojo extends AbstractOutputMojo {
         }
 
         getLog().info("Start replacing keys");
-        writePerLangauge(true);
+        writePerLanguage(true);
     }
 
     protected CrawlAction doPerLanguage(ReplaceSearch search, Properties p, File targetDir) {

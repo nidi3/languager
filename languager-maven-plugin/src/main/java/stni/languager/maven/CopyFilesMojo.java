@@ -15,7 +15,7 @@ import java.util.Properties;
 public class CopyFilesMojo extends AbstractOutputMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         getLog().info("Start copying files");
-        writePerLangauge(false);
+        writePerLanguage(false);
     }
 
     @Override

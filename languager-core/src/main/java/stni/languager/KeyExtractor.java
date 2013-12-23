@@ -42,20 +42,20 @@ public class KeyExtractor {
         }
     }
 
-    private final SortedMap<String, Message> messages = new TreeMap<String, Message>();
-    private final Set<String> ignoredValues = new HashSet<String>();
-    private final Map<String, FindResult<List<String>>> negatives = new HashMap<String, FindResult<List<String>>>();
-    private final Map<File, List<FindResult<List<String>>>> resultsByLocation = new HashMap<File, List<FindResult<List<String>>>>();
-    private final Map<String, FindResult<List<String>>> resultsByKey = new HashMap<String, FindResult<List<String>>>();
-    private final Map<String, FindResult<List<String>>> resultsByValue = new HashMap<String, FindResult<List<String>>>();
-    private final List<FindResultPair> sameKeyResults = new ArrayList<FindResultPair>();
-    private final List<FindResultPair> sameValueResults = new ArrayList<FindResultPair>();
+    private final SortedMap<String, Message> messages = new TreeMap<>();
+    private final Set<String> ignoredValues = new HashSet<>();
+    private final Map<String, FindResult<List<String>>> negatives = new HashMap<>();
+    private final Map<File, List<FindResult<List<String>>>> resultsByLocation = new HashMap<>();
+    private final Map<String, FindResult<List<String>>> resultsByKey = new HashMap<>();
+    private final Map<String, FindResult<List<String>>> resultsByValue = new HashMap<>();
+    private final List<FindResultPair> sameKeyResults = new ArrayList<>();
+    private final List<FindResultPair> sameValueResults = new ArrayList<>();
     private boolean cleanedNegatives = true;
 
     public void extractFromFiles(CrawlPattern crawlPattern, String regex, EnumSet<FindRegexAction.Flag> flags) throws IOException {
         cleanedNegatives = false;
         FileCrawler crawler = createCrawler(crawlPattern);
-        for (FindResult result : crawler.crawl(new FindRegexAction(regex, null, flags)).getResults()) {
+        for (FindResult<List<String>> result : crawler.crawl(new FindRegexAction(regex, null, flags)).getResults()) {
             final String key = keyOf(result);
             if (key.length() == 0) {
                 ignoredValues.add(valueOf(result));
@@ -73,10 +73,10 @@ public class KeyExtractor {
         }
     }
 
-    private void saveResultByLocation(FindResult result) {
+    private void saveResultByLocation(FindResult<List<String>> result) {
         List<FindResult<List<String>>> resultListByLocation = resultsByLocation.get(result.getPosition().getSource());
         if (resultListByLocation == null) {
-            resultListByLocation = new ArrayList<FindResult<List<String>>>();
+            resultListByLocation = new ArrayList<>();
             resultsByLocation.put(result.getPosition().getSource(), resultListByLocation);
         }
         resultListByLocation.add(result);
@@ -85,7 +85,7 @@ public class KeyExtractor {
     public void extractNegativesFromFiles(CrawlPattern crawlPattern, String regex, String ignoreRegex, EnumSet<FindRegexAction.Flag> flags) throws IOException {
         cleanedNegatives = false;
         FileCrawler crawler = createCrawler(crawlPattern);
-        for (FindResult result : crawler.crawl(new FindRegexAction(regex, ignoreRegex, flags)).getResults()) {
+        for (FindResult<List<String>>  result: crawler.crawl(new FindRegexAction(regex, ignoreRegex, flags)).getResults()) {
             negatives.put(keyOf(result), result);
         }
     }
@@ -97,17 +97,17 @@ public class KeyExtractor {
     private void checkSameKey(FindResult<List<String>> result) {
         String value = valueOf(result);
         String key = keyOf(result);
-        final FindResult sameKey = resultsByKey.get(key);
+        final FindResult<List<String>>  sameKey = resultsByKey.get(key);
         if (sameKey != null && !nullSafeEquals(value, valueOf(sameKey))) {
             sameKeyResults.add(new FindResultPair(sameKey, result));
         }
         resultsByKey.put(key, result);
     }
 
-    private void checkSameValue(FindResult result) {
+    private void checkSameValue(FindResult<List<String>>  result) {
         String value = valueOf(result);
         String key = keyOf(result);
-        final FindResult sameValue = resultsByValue.get(value);
+        final FindResult<List<String>>  sameValue = resultsByValue.get(value);
         if (sameValue != null && !key.equals(keyOf(sameValue))) {
             sameValueResults.add(new FindResultPair(sameValue, result));
         }
@@ -124,7 +124,7 @@ public class KeyExtractor {
 
     public Collection<FindResult<List<String>>> getNegatives() {
         cleanNegatives();
-        final List<FindResult<List<String>>> findResults = new ArrayList<FindResult<List<String>>>(negatives.values());
+        final List<FindResult<List<String>>> findResults = new ArrayList<>(negatives.values());
         Collections.sort(findResults, FIND_RESULT_SORTER);
         return findResults;
     }

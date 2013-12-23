@@ -1,6 +1,6 @@
 package stni.languager.crawl;
 
-import org.codehaus.plexus.util.FileUtils;
+import stni.languager.Util;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,7 +18,7 @@ public class FileCrawler {
     }
 
     public <T extends CrawlAction> T crawl(T crawlAction) throws IOException {
-        List<File> files = FileUtils.getFiles(crawlPattern.getBasedir(), crawlPattern.getIncludes(), crawlPattern.getExcludes());
+        List<File> files = Util.getFiles(crawlPattern.getBasedir(), crawlPattern.getIncludes(), crawlPattern.getExcludes());
         for (File file : files) {
             crawlAction.action(crawlPattern.getBasedir(), file, crawlPattern);
         }

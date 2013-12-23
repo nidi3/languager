@@ -22,7 +22,7 @@ public class FindRegexAction extends AbstractContentReadingCrawlAction {
         WITH_EMPTY, TRIM
     }
 
-    private final List<FindResult<List<String>>> results = new ArrayList<FindResult<List<String>>>();
+    private final List<FindResult<List<String>>> results = new ArrayList<>();
 
     private final Pattern regex;
     private final Pattern ignoreRegex;
@@ -42,11 +42,11 @@ public class FindRegexAction extends AbstractContentReadingCrawlAction {
         Matcher matcher = regex.matcher(content);
         while (matcher.find()) {
             if (isValidMatch(matcher)) {
-                List<String> finds = new ArrayList<String>();
+                List<String> finds = new ArrayList<>();
                 for (int i = 1; i <= matcher.groupCount(); i++) {
                     finds.add(group(matcher, i));
                 }
-                results.add(new FindResult<List<String>>(
+                results.add(new FindResult<>(
                         new SourcePosition(
                                 file, matcher.start(), matcher.end(),
                                 lineOfPosition(matcher.start()), columnOfPosition(matcher.start())),

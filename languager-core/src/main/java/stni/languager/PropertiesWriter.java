@@ -10,7 +10,7 @@ import static stni.languager.Message.Status.NOT_FOUND;
  *
  */
 public class PropertiesWriter {
-    private static Pattern NEW_LINE = Pattern.compile("\\r?\\n|\\r", Pattern.MULTILINE);
+    private static final Pattern NEW_LINE = Pattern.compile("\\r?\\n|\\r", Pattern.MULTILINE);
 
     private final char csvSeparator;
 
@@ -23,22 +23,18 @@ public class PropertiesWriter {
     }
 
     public void write(Reader csv, String source, File outputDir, String basename) throws IOException {
-        MessagesReader in = null;
-        try {
-            in = new MessagesReader(csv, csvSeparator);
+        try (MessagesReader in = new MessagesReader(csv, csvSeparator)) {
             if (!in.isEndOfInput()) {
                 BufferedWriter[] out = initPropertiesFiles(source, outputDir, basename, in.getFirstParts());
                 writePropertiesFiles(in, out);
                 closePropertiesFiles(out);
             }
-        } catch (IOException e) {
-            in.close();
         }
     }
 
     private void closePropertiesFiles(BufferedWriter[] out) throws IOException {
-        for (int i = 0; i < out.length; i++) {
-            out[i].close();
+        for (BufferedWriter writer : out) {
+            writer.close();
         }
     }
 

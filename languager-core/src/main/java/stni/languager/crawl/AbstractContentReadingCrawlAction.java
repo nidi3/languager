@@ -16,23 +16,19 @@ public abstract class AbstractContentReadingCrawlAction extends AbstractCrawlAct
     private Integer[] newlines;
 
     public void action(File basedir, File file, CrawlPattern pattern) throws IOException {
-        InputStreamReader in = null;
-        try {
-            in = new InputStreamReader(new FileInputStream(file), pattern.getEncoding());
+        try (InputStreamReader in = new InputStreamReader(new FileInputStream(file), pattern.getEncoding())) {
             char[] ch = new char[(int) file.length()];
             int read = in.read(ch);
             String s = new String(ch, 0, read);
             findNewlines(s);
             doAction(basedir, file, s, pattern);
-        } finally {
-            Util.closeSilently(in);
         }
     }
 
     protected abstract void doAction(File basedir, File file, String content, CrawlPattern pattern) throws IOException;
 
     protected void findNewlines(String content) {
-        List<Integer> newlineList = new ArrayList<Integer>();
+        List<Integer> newlineList = new ArrayList<>();
         for (int i = 0; i < content.length(); i++) {
             if (content.charAt(i) == '\n') {
                 newlineList.add(i);
