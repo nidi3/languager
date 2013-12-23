@@ -14,16 +14,6 @@ import static stni.languager.Message.Status.FOUND;
  *
  */
 public class KeyExtractor {
-    private static final Comparator<FindResult<?>> FIND_RESULT_SORTER = new Comparator<FindResult<?>>() {
-        public int compare(FindResult<?> result1, FindResult<?> result2) {
-            int res = result1.getPosition().getSource().compareTo(result2.getPosition().getSource());
-            if (res == 0) {
-                res = result1.getPosition().getLine() - result2.getPosition().getLine();
-            }
-            return res;
-        }
-    };
-
     public static class FindResultPair {
         private final FindResult<List<String>> result1;
         private final FindResult<List<String>> result2;
@@ -85,7 +75,7 @@ public class KeyExtractor {
     public void extractNegativesFromFiles(CrawlPattern crawlPattern, String regex, String ignoreRegex, EnumSet<FindRegexAction.Flag> flags) throws IOException {
         cleanedNegatives = false;
         FileCrawler crawler = createCrawler(crawlPattern);
-        for (FindResult<List<String>>  result: crawler.crawl(new FindRegexAction(regex, ignoreRegex, flags)).getResults()) {
+        for (FindResult<List<String>> result : crawler.crawl(new FindRegexAction(regex, ignoreRegex, flags)).getResults()) {
             negatives.put(keyOf(result), result);
         }
     }
@@ -97,17 +87,17 @@ public class KeyExtractor {
     private void checkSameKey(FindResult<List<String>> result) {
         String value = valueOf(result);
         String key = keyOf(result);
-        final FindResult<List<String>>  sameKey = resultsByKey.get(key);
+        final FindResult<List<String>> sameKey = resultsByKey.get(key);
         if (sameKey != null && !nullSafeEquals(value, valueOf(sameKey))) {
             sameKeyResults.add(new FindResultPair(sameKey, result));
         }
         resultsByKey.put(key, result);
     }
 
-    private void checkSameValue(FindResult<List<String>>  result) {
+    private void checkSameValue(FindResult<List<String>> result) {
         String value = valueOf(result);
         String key = keyOf(result);
-        final FindResult<List<String>>  sameValue = resultsByValue.get(value);
+        final FindResult<List<String>> sameValue = resultsByValue.get(value);
         if (sameValue != null && !key.equals(keyOf(sameValue))) {
             sameValueResults.add(new FindResultPair(sameValue, result));
         }
@@ -125,7 +115,7 @@ public class KeyExtractor {
     public Collection<FindResult<List<String>>> getNegatives() {
         cleanNegatives();
         final List<FindResult<List<String>>> findResults = new ArrayList<>(negatives.values());
-        Collections.sort(findResults, FIND_RESULT_SORTER);
+        Collections.sort(findResults, FindResult.POSITION_COMPARATOR);
         return findResults;
     }
 
@@ -167,11 +157,6 @@ public class KeyExtractor {
 
     public Set<String> getIgnoredValues() {
         return ignoredValues;
-    }
-
-    public String location(FindResult result) {
-        final SourcePosition pos = result.getPosition();
-        return pos.getSource() + ":" + pos.getLine() + ":" + pos.getColumn();
     }
 
     public String valueOf(FindResult<List<String>> result) {
