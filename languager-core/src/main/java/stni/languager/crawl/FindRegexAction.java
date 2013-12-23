@@ -1,7 +1,7 @@
 package stni.languager.crawl;
 
-import static stni.languager.crawl.FindRegexAction.Flag.TRIM;
-import static stni.languager.crawl.FindRegexAction.Flag.WITH_EMPTY;
+import stni.languager.FindResult;
+import stni.languager.SourcePosition;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import stni.languager.FindResult;
-import stni.languager.SourcePosition;
+import static stni.languager.crawl.FindRegexAction.Flag.TRIM;
+import static stni.languager.crawl.FindRegexAction.Flag.WITH_EMPTY;
 
 /**
  *
@@ -22,7 +22,7 @@ public class FindRegexAction extends AbstractContentReadingCrawlAction {
         WITH_EMPTY, TRIM
     }
 
-    private final List<FindResult> results = new ArrayList<FindResult>();
+    private final List<FindResult<List<String>>> results = new ArrayList<FindResult<List<String>>>();
 
     private final Pattern regex;
     private final Pattern ignoreRegex;
@@ -46,7 +46,7 @@ public class FindRegexAction extends AbstractContentReadingCrawlAction {
                 for (int i = 1; i <= matcher.groupCount(); i++) {
                     finds.add(group(matcher, i));
                 }
-                results.add(new FindResult(
+                results.add(new FindResult<List<String>>(
                         new SourcePosition(
                                 file, matcher.start(), matcher.end(),
                                 lineOfPosition(matcher.start()), columnOfPosition(matcher.start())),
@@ -72,7 +72,7 @@ public class FindRegexAction extends AbstractContentReadingCrawlAction {
         return flags.contains(TRIM) ? group.trim() : group;
     }
 
-    public List<FindResult> getResults() {
+    public List<FindResult<List<String>>> getResults() {
         return results;
     }
 

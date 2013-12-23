@@ -1,24 +1,22 @@
 package stni.languager;
 
-import java.util.List;
-
 /**
  *
  */
-public class FindResult {
+public class FindResult<T> {
     private final SourcePosition position;
-    private final List<String> findings;
+    private final T finding;
 
-    public FindResult(SourcePosition position, List<String> findings) {
+    public FindResult(SourcePosition position, T finding) {
         this.position = position;
-        this.findings = findings;
+        this.finding = finding;
     }
 
     public SourcePosition getPosition() {
         return position;
     }
 
-    public List<String> getFindings() {
-        return findings;
+    public T getFinding() {
+        return finding;
     }
 }

@@ -44,7 +44,7 @@ public class MessagesWriter {
             in = new MessagesReader(f, encoding, csvSeparator);
             while (!in.isEndOfInput()) {
                 MessageLine line = in.readLine();
-                if (line.isEmpty()) {
+                if (!line.isEmpty()) {
                     String key = line.readKey();
                     Message.Status status = line.readStatus();
                     String defaultValue = line.readDefaultValue(null);

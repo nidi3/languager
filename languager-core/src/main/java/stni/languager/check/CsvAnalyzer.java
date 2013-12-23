@@ -26,43 +26,17 @@ public class CsvAnalyzer {
         this(file, Util.readCsvFile(file, encoding, separator));
     }
 
-    public List<FindResult> compareDefaultValueWithLanguage(String lang) throws IOException {
-        int index = getColumnOfLang(lang);
-        List<FindResult> res = new ArrayList<FindResult>();
+    public List<FindResult<MessageLine>> compareDefaultValueWithLanguage(String lang) throws IOException {
+        int language = contents.get(0).findLang(lang);
+        List<FindResult<MessageLine>> res = new ArrayList<FindResult<MessageLine>>();
         int lineNum = 1;
-        for (List<String> line : contents.subList(1, contents.size())) {
+        for (MessageLine line : contents.subList(1, contents.size())) {
             lineNum++;
-            if (line.size() > index) {
-                final String entry = line.get(index);
-                if (entry.length() > 0 && !getDefaultValue(line).equals(entry)) {
-                    res.add(new FindResult(new SourcePosition(file, 0, 0, lineNum, 1), line));
-                }
+            String entry = line.readValue(language, "");
+            if (entry.length() > 0 && !entry.equals(line.readDefaultValue(null))) {
+                res.add(new FindResult<MessageLine>(new SourcePosition(file, 0, 0, lineNum, 1), line));
             }
         }
         return res;
-    }
-
-    private int getColumnOfLang(String lang) {
-        int index = contents.get(0).indexOf(lang);
-        if (index < 0) {
-            throw new IllegalArgumentException("No column with language '" + lang + "' found");
-        }
-        return index;
-    }
-
-    public String getKey(FindResult result) {
-        return MessageLine.readKey(result.getFindings());
-    }
-
-    private String getDefaultValue(List<String> line) {
-        return MessageLine.readDefaultValue(line, null);
-    }
-
-    public String getDefaultValue(FindResult result) {
-        return getDefaultValue(result.getFindings());
-    }
-
-    public String getValue(FindResult result, String lang) {
-        return result.getFindings().get(getColumnOfLang(lang));
     }
 }

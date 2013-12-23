@@ -1,23 +1,15 @@
 package stni.languager;
 
-import static org.junit.Assert.assertEquals;
-import static stni.languager.Message.Status.FOUND;
+import org.junit.Test;
+import stni.languager.crawl.CrawlPattern;
+import stni.languager.crawl.FindRegexAction;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedMap;
+import java.util.*;
 
-import org.junit.Test;
-
-import stni.languager.crawl.CrawlPattern;
-import stni.languager.crawl.FindRegexAction;
+import static org.junit.Assert.assertEquals;
+import static stni.languager.Message.Status.FOUND;
 
 /**
  *
@@ -71,11 +63,11 @@ public class KeyExtractorTest extends BaseTest {
                 new CrawlPattern(base, "test2.html", null, "utf-8"),
                 ">(.*?)<", null, EnumSet.of(FindRegexAction.Flag.TRIM));
 
-        final Collection<FindResult> negatives = extractor.getNegatives();
+        final Collection<FindResult<List<String>>> negatives = extractor.getNegatives();
         assertEquals(2, negatives.size());
-        Iterator<FindResult> iter = negatives.iterator();
-        assertEquals("Text9", iter.next().getFindings().get(0));
-        assertEquals("{{ignore}}", iter.next().getFindings().get(0));
+        Iterator<FindResult<List<String>>> iter = negatives.iterator();
+        assertEquals("Text9", iter.next().getFinding().get(0));
+        assertEquals("{{ignore}}", iter.next().getFinding().get(0));
     }
 
     @Test
@@ -85,9 +77,9 @@ public class KeyExtractorTest extends BaseTest {
                 new CrawlPattern(base, "test2.html", null, "utf-8"),
                 ">(.*?)<", "\\{\\{.*?\\}\\}", EnumSet.of(FindRegexAction.Flag.TRIM));
 
-        final Collection<FindResult> negatives = extractor.getNegatives();
+        final Collection<FindResult<List<String>>> negatives = extractor.getNegatives();
         assertEquals(1, negatives.size());
-        assertEquals("Text9", negatives.iterator().next().getFindings().get(0));
+        assertEquals("Text9", negatives.iterator().next().getFinding().get(0));
     }
 
     @Test
@@ -100,7 +92,7 @@ public class KeyExtractorTest extends BaseTest {
                 new CrawlPattern(base, "inner.html", null, "utf-8"),
                 ">(.*?)<", null, EnumSet.of(FindRegexAction.Flag.TRIM));
 
-        final Collection<FindResult> negatives = extractor.getNegatives();
+        final Collection<FindResult<List<String>>> negatives = extractor.getNegatives();
         assertEquals(0, negatives.size());
     }
 
@@ -114,10 +106,10 @@ public class KeyExtractorTest extends BaseTest {
                 new CrawlPattern(base, "*.js", null, "utf-8"),
                 "'(.*?)'", null, EnumSet.of(FindRegexAction.Flag.TRIM));
 
-        final Collection<FindResult> negatives = extractor.getNegatives();
+        final Collection<FindResult<List<String>>> negatives = extractor.getNegatives();
         assertEquals(1, negatives.size());
-        final Iterator<FindResult> iter = negatives.iterator();
-        assertEquals("unmessaged", iter.next().getFindings().get(0));
+        final Iterator<FindResult<List<String>>> iter = negatives.iterator();
+        assertEquals("unmessaged", iter.next().getFinding().get(0));
 
         final SortedMap<String, Message> messages = extractor.getMessages();
         assertEquals(1, messages.size());

@@ -1,16 +1,16 @@
 package stni.languager.maven;
 
-import java.io.IOException;
-import java.util.List;
-
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-
-import stni.languager.check.CsvAnalyzer;
 import stni.languager.FindResult;
-import stni.languager.check.LinkChecker;
+import stni.languager.MessageLine;
 import stni.languager.OccurrenceReader;
 import stni.languager.Util;
+import stni.languager.check.CsvAnalyzer;
+import stni.languager.check.LinkChecker;
+
+import java.io.IOException;
+import java.util.List;
 
 /**
  * @author stni
@@ -27,7 +27,7 @@ public class CheckMojo extends AbstractI18nMojo {
      */
     private String checkDefaultsEqual;
 
-    private List<List<String>> messages;
+    private List<MessageLine> messages;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         try {
@@ -48,12 +48,12 @@ public class CheckMojo extends AbstractI18nMojo {
     }
 
     private void checkLinks() throws IOException {
-        final LinkChecker checker = new LinkChecker(getCsvFile(), messages);
-        final List<FindResult> brokenLinks = checker.findBrokenLinks();
+        final LinkChecker checker = new LinkChecker(getCsvFile(), messages, getLogger());
+        final List<FindResult<String>> brokenLinks = checker.findBrokenLinks();
         if (!brokenLinks.isEmpty()) {
             getLogger().logSection("Broken links:");
-            for (FindResult brokenLink : brokenLinks) {
-                getLogger().log(pad(brokenLink.getFindings().get(0)));
+            for (FindResult<String> brokenLink : brokenLinks) {
+                getLogger().log(pad(brokenLink.getFinding()));
                 getLogger().log(location(brokenLink));
             }
         }
@@ -62,13 +62,14 @@ public class CheckMojo extends AbstractI18nMojo {
     private void checkDefaults() throws IOException {
         final OccurrenceReader occurrenceReader = new OccurrenceReader(getCsvFile());
         final CsvAnalyzer analyzer = new CsvAnalyzer(getCsvFile(), messages);
-        final List<FindResult> diffs = analyzer.compareDefaultValueWithLanguage(checkDefaultsEqual);
+        final List<FindResult<MessageLine>> diffs = analyzer.compareDefaultValueWithLanguage(checkDefaultsEqual);
         if (!diffs.isEmpty()) {
             getLogger().logSection("Entries with difference between default value and " + checkDefaultsEqual + ":");
-            for (FindResult diff : diffs) {
-                getLogger().log(pad(analyzer.getKey(diff)));
+            for (FindResult<MessageLine> diff : diffs) {
+                final String key = diff.getFinding().readKey();
+                getLogger().log(pad(key));
                 getLogger().log(location(diff));
-                for (String occurrence : occurrenceReader.getOccurrences(analyzer.getKey(diff))) {
+                for (String occurrence : occurrenceReader.getOccurrences(key)) {
                     getLogger().log(pad() + occurrence);
                 }
             }

@@ -49,7 +49,6 @@ public class MessageLine implements Iterable<String> {
     }
 
     /**
-     * @param line
      * @param language 0=default, 1=first lang, etc.
      * @return
      */
@@ -57,6 +56,14 @@ public class MessageLine implements Iterable<String> {
         return (line.size() > language + DEFAULT_COLUMN && line.get(language + DEFAULT_COLUMN).length() > 0)
                 ? line.get(language + DEFAULT_COLUMN)
                 : ifNotAvailable;
+    }
+
+    public int findLang(String lang) {
+        int index = line.indexOf(lang);
+        if (index < 0) {
+            throw new IllegalArgumentException("No column with language '" + lang + "' found");
+        }
+        return index - DEFAULT_COLUMN;
     }
 
     public int languageCount() {
@@ -94,12 +101,12 @@ public class MessageLine implements Iterable<String> {
         }
     }
 
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return !(line.size() > 1 || line.get(0).trim().length() > 0);
     }
 
-    @Override
     public Iterator<String> iterator() {
         return line.iterator();
     }
+
 }
