@@ -1,4 +1,4 @@
-Languager
+Languager [![Build Status](https://travis-ci.org/nidi3/languager.png?branch=master)](https://travis-ci.org/nidi3/languager)
 =========
 
 A simple tool to handle internationalization of source code.
