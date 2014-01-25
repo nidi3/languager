@@ -1,27 +1,32 @@
 package stni.languager.maven;
 
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import stni.languager.PropertiesWriter;
+
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-
-import stni.languager.PropertiesWriter;
-
 /**
+ * Write a set of properties files out of a csv file containing keys and translations.
+ *
  * @author stni
- * @goal writeProperties
  */
+@Mojo(name = "writeProperties", defaultPhase = LifecyclePhase.GENERATE_RESOURCES)
 public class WritePropertiesMojo extends AbstractI18nMojo {
     /**
-     * @parameter expression="${propertiesDirectory}" default-value="target/generated-sources"
+     * The directory to write the properties files to.
      */
+    @Parameter(property = "propertiesDirectory", defaultValue = "target/generated-sources")
     protected File propertiesDirectory;
 
     /**
-     * @parameter expression="${baseName}"
-     * @required
+     * The basename of the properties to be written.
      */
+    @Parameter(property = "baseName", required = true)
     protected String baseName;
 
 

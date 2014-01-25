@@ -2,6 +2,9 @@ package stni.languager.maven;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import stni.languager.FindResult;
 import stni.languager.MessageLine;
 import stni.languager.OccurrenceReader;
@@ -13,18 +16,22 @@ import java.io.IOException;
 import java.util.List;
 
 /**
+ * Execute some checks over the translations.
+ *
  * @author stni
- * @goal check
  */
+@Mojo(name = "check", defaultPhase = LifecyclePhase.GENERATE_RESOURCES)
 public class CheckMojo extends AbstractI18nMojo {
     /**
-     * @parameter expression="${checkLinks}"
+     * If strings that look like URLs ('http://...') should be checked if they are working links.
      */
+    @Parameter(property = "checkLinks")
     private boolean checkLinks;
 
     /**
-     * @parameter expression="${checkDefaultsEqual}"
+     * Check that all translations for the given language equal the default translation.
      */
+    @Parameter(property = "checkDefaultsEqual")
     private String checkDefaultsEqual;
 
     private List<MessageLine> messages;

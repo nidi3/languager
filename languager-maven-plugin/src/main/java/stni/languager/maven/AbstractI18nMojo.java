@@ -4,6 +4,7 @@ import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.classworlds.ClassWorld;
@@ -14,50 +15,44 @@ import java.io.*;
 import java.util.List;
 
 /**
- * @phase generate-resources
+ *
  */
 public abstract class AbstractI18nMojo extends AbstractMojo {
 
     private static final int PAD_LEN = 50;
 
     /**
-     * @parameter expression="${searchBasedir}"
-     * @required
-     * @readonly
+     * The directory where the searches should start.
      */
+    @Parameter(property = "searchBasedir", required = true)
     private File searchBasedir;
 
-    /**
-     * @parameter expression="${project}"
-     * @required
-     * @readonly
-     */
+    @Parameter(property = "project", required = true, readonly = true)
     protected MavenProject project;
 
     /**
-     * @parameter expression="${csvFile}" default-value="src/main/resources/messages.csv"
+     * The translations csv file to write.
      */
+    @Parameter(property = "csvFile", defaultValue = "src/main/resources/messages.csv")
     private File csvFile;
 
     /**
-     * @parameter expression="${csvEncoding}" default-value="utf-8"
+     * The encoding of the translations csv file.
      */
+    @Parameter(property = "csvEncoding", defaultValue = "UTF-8")
     protected String csvEncoding;
 
     /**
-     * @parameter expression="${csvSeparator}" default-value=';'
+     * The field separator to use in the translations csv file.
      */
+    @Parameter(property = "csvSeparator", defaultValue = ";")
     protected char csvSeparator = ';';
 
     /**
-     * @parameter expression="${log}" default-value="console"
+     * Comma separated list of loggers to use. Available loggers are 'console', 'file'.
      */
+    @Parameter(property = "log", defaultValue = "console")
     protected String log = "console";
-
-    /**
-     * @parameter expression="${customizerClass}"
-     */
-    protected String customizerClass;
 
     private DelegatingLogger logger;
 

@@ -1,6 +1,7 @@
 package stni.languager.maven;
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Parameter;
 import stni.languager.Util;
 import stni.languager.crawl.CrawlAction;
 import stni.languager.crawl.CrawlPattern;
@@ -12,31 +13,35 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * @author stni
+ *
  */
 public abstract class AbstractOutputMojo extends AbstractI18nMojo {
     protected static final String PROPERTIES = ".properties";
 
     /**
-     * @parameter expression="${replacedDirectory}" default-value="target/${project.build.finalName}"
+     * The directory where the translated files are written to.
      */
+    @Parameter(property = "replacedDirectory", defaultValue = "target/${project.build.finalName}")
     protected File replacedDirectory;
 
     /**
-     * @parameter expression="${searches}"
+     * ReplaceSearch expressions which define the files to be processed.
+     * A ReplaceSearch can contain 'regex', 'includes', 'excludes', 'encoding', 'replacement', 'parameterMarker', 'parameterSeparator', 'escapes'.
      */
+    @Parameter(property = "searches")
     protected List<ReplaceSearch> searches;
 
     /**
-     * @parameter expression="${baseName}"
-     * @required
+     * The directory containing the properties files which define the languages to be processed.
      */
-    protected String baseName;
+    @Parameter(property = "propertiesDirectory", defaultValue = "target/generated-sources")
+    protected File propertiesDirectory;
 
     /**
-     * @parameter expression="${propertiesDirectory}" default-value="target/generated-sources"
+     * The name of the properties files to be used.
      */
-    protected File propertiesDirectory;
+    @Parameter(property = "baseName")
+    protected String baseName;
 
     protected void writePerLanguage(boolean loadProperties) throws MojoExecutionException {
         try {

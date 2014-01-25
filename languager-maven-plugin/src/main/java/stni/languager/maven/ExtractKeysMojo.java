@@ -2,6 +2,10 @@ package stni.languager.maven;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import stni.languager.FindResult;
 import stni.languager.KeyExtractor;
 import stni.languager.crawl.CrawlPattern;
@@ -15,25 +19,30 @@ import static stni.languager.crawl.FindRegexAction.Flag.TRIM;
 import static stni.languager.crawl.FindRegexAction.Flag.WITH_EMPTY;
 
 /**
+ * Extract translation keys and their default translations out of source files and write them into a csv file.
+ *
  * @author stni
- * @goal extractKeys
- * @requiresDependencyResolution compile
  */
+@Mojo(name = "extractKeys", defaultPhase = LifecyclePhase.GENERATE_RESOURCES, requiresDependencyResolution = ResolutionScope.COMPILE)
 public class ExtractKeysMojo extends AbstractI18nMojo {
 
     /**
-     * @parameter expression="${searches}"
+     * ExtractSearch expressions which define the files to be processed.
+     * A ExtractSearch can contain 'regex', 'includes', 'excludes', 'encoding', 'negativeRegex', 'ignoreRegex'.
      */
+    @Parameter(property = "searches")
     protected List<ExtractSearch> searches = Collections.emptyList();
 
     /**
-     * @parameter expression="${propertyLocations}"
+     * Locations of properties files inside the classpath to also process.
      */
+    @Parameter(property = "propertyLocations")
     protected List<String> propertyLocations = Collections.emptyList();
 
     /**
-     * @parameter expression="${removeNewlines}" default-value="true"
+     * Remove newline characters in translations.
      */
+    @Parameter(property = "removeNewlines", defaultValue = "true")
     protected boolean removeNewLines = true;
 
     private KeyExtractor extractor = new KeyExtractor();

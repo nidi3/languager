@@ -2,6 +2,10 @@ package stni.languager.maven;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import stni.languager.crawl.CrawlAction;
 import stni.languager.crawl.ReplacePropertiesAction;
 import stni.languager.crawl.ReplaceRegexAction;
@@ -12,11 +16,17 @@ import java.lang.reflect.Method;
 import java.util.Properties;
 
 /**
+ * Replace all keys matching a regex by their respective translations. This is done for every available language.
+ *
  * @author stni
- * @goal replaceKeys
- * @requiresDependencyResolution compile
  */
+@Mojo(name = "replaceKeys", defaultPhase = LifecyclePhase.GENERATE_RESOURCES, requiresDependencyResolution = ResolutionScope.COMPILE)
 public class ReplaceKeysMojo extends AbstractOutputMojo {
+    /**
+     * The name of a class in the classpath. Its main method will be invoked before the replacement takes place.
+     */
+    @Parameter(property = "customizerClass")
+    protected String customizerClass;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (customizerClass != null) {
