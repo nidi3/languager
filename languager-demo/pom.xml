@@ -21,6 +21,7 @@
     </properties>
 
     <build>
+        <finalName>languager-demo</finalName>
         <plugins>
             <plugin>
                 <groupId>stni.languager</groupId>
@@ -28,8 +29,6 @@
                 <version>${project.version}</version>
                 <configuration>
                     <csvFile>src/main/lang/messages.csv</csvFile>
-                    <csvEncoding>iso-8859-1</csvEncoding>
-                    <propertiesDirectory>target/generated-sources/ch/cs/livingservices/messages</propertiesDirectory>
                     <baseName>messages</baseName>
                     <searchBasedir>src/main/webapp/lang</searchBasedir>
                     <log>console</log>

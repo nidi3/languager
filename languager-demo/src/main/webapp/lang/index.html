@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>
         <msg key="title">Languager demo</msg>
     </title>
@@ -9,9 +10,41 @@
 <h1>
     <msg key="welcome">Welcome to the demo!</msg>
 </h1>
-Some untranslated text.
-<msg key="welcome">This key is used twice</msg>
-<msg key="sameTitle">Languager demo</msg>
-<msg key="linkCheck">Is <a href="http://www.wrong">this</a> a valid link?</msg>
+<a href="../../../../target/languager-demo/lang/index.html">From source to target</a>
+<br/>
+<a href="../../../src/main/webapp/lang/index.html">From target to source</a>
+<br/>
+<a href="../lang/index.html">lang</a>
+<a href="../en/index.html">en</a>
+<a href="../de/index.html">de</a>
+<ul>
+    <li>
+        <msg key="describe.output">The languager plugin will create translated versions of this file in
+            target/languager-demo
+        </msg>
+    </li>
+    <li>
+        <msg key="describe.warn">During build, it will warn about
+            <ul>
+                <li>Identical translations with different keys</li>
+                <li>Identical keys with different translations</li>
+                <li>Texts that are not translated</li>
+                <li>Broken links</li>
+            </ul>
+        </msg>
+    </li>
+    <li>
+        Some untranslated text.
+    </li>
+    <li>
+        <msg key="welcome">This key is used twice</msg>
+    </li>
+    <li>
+        <msg key="sameTitle">Languager demo</msg>
+    </li>
+    <li>
+        <msg key="linkCheck">Is <a href="http://www.wrong">this</a> a valid link?</msg>
+    </li>
+</ul>
 </body>
 </html>

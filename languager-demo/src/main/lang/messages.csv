@@ -1,5 +1,7 @@
 key;status;occurs;default value;en;de
-linkCheck;+;index.html;"Is <a href=""http://www.wrong"">this</a> a valid link?";;
-sameTitle;+;index.html;Languager demo;;
+describe.output;+;index.html;The languager plugin will create translated versions of this file in target/languager-demo;;Das languager Plugin erzeugt übersetzte Versionen von dieser Datei in target/languager-demo
+describe.warn;+;index.html;During build, it will warn about <ul> <li>Identical translations with different keys</li> <li>Identical keys with different translations</li> <li>Texts that are not translated</li> <li>Broken links</li> </ul>;;Während dem Build-Prozess warnt das Plugin vor <ul> <li>Identischen Übersetzungen mit unterschiedlichen Keys</li> <li>Identischen Keys mit unterschiedlichen Übersetzungen</li> <li>Nicht übersetzten Texten</li> <li>Ungültigen Links</li> </ul>
+linkCheck;+;index.html;"Is <a href=""http://www.wrong"">this</a> a valid link?";;"Ist <a href=""http://www.wrong"">dies</a> ein gültiger Link?"
+sameTitle;+;index.html;Languager demo;;Languager Demonstration
 title;+;index.html;Languager demo;;Demonstration des Languager plugins
 welcome;+;index.html;Welcome to the demo!;;Willkommen zu der Demonstration!
