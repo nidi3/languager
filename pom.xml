@@ -10,6 +10,7 @@
     <modules>
         <module>languager-core</module>
         <module>languager-maven-plugin</module>
+        <module>languager-demo</module>
     </modules>
 
     <properties>
@@ -118,7 +119,7 @@
             <dependency>
                 <groupId>org.codehaus.plexus</groupId>
                 <artifactId>plexus-utils</artifactId>
-                <version>1.4.1</version>
+                <version>3.0.8</version>
             </dependency>
 
             <dependency>

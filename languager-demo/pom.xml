@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>stni.languager</groupId>
+        <artifactId>languager</artifactId>
+        <version>1.1.5-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>languager-demo</artifactId>
+    <name>${project.artifactId}</name>
+    <packaging>war</packaging>
+
+    <description>Demo project</description>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <dependency.locations.enabled>false</dependency.locations.enabled>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>stni.languager</groupId>
+                <artifactId>languager-maven-plugin</artifactId>
+                <version>${project.version}</version>
+                <configuration>
+                    <csvFile>src/main/lang/messages.csv</csvFile>
+                    <csvEncoding>iso-8859-1</csvEncoding>
+                    <propertiesDirectory>target/generated-sources/ch/cs/livingservices/messages</propertiesDirectory>
+                    <baseName>messages</baseName>
+                    <searchBasedir>src/main/webapp/lang</searchBasedir>
+                    <log>console</log>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>extract</id>
+                        <goals>
+                            <goal>extractKeys</goal>
+                        </goals>
+                        <configuration>
+                            <searches>
+                                <search>
+                                    <includes>*.html</includes>
+                                    <regex><![CDATA[<msg key="(.*?)">(.*?)</msg>]]></regex>
+                                    <negativeRegex><![CDATA[>(.*?)<]]></negativeRegex>
+                                </search>
+                            </searches>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>check</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <checkLinks>true</checkLinks>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>write</id>
+                        <goals>
+                            <goal>writeProperties</goal>
+                        </goals>
+                        <configuration>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>replace</id>
+                        <goals>
+                            <goal>replaceKeys</goal>
+                        </goals>
+                        <configuration>
+                            <searches>
+                                <search>
+                                    <includes>*.html</includes>
+                                    <regex><![CDATA[<msg key="(.*?)">(.*?)</msg>]]></regex>
+                                    <replacement>$1</replacement>
+                                </search>
+                            </searches>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+
+    </dependencies>
+
+
+</project>

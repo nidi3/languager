@@ -1,0 +1,5 @@
+key;status;occurs;default value;en;de
+linkCheck;+;index.html;"Is <a href=""http://www.wrong"">this</a> a valid link?";;
+sameTitle;+;index.html;Languager demo;;
+title;+;index.html;Languager demo;;Demonstration des Languager plugins
+welcome;+;index.html;Welcome to the demo!;;Willkommen zu der Demonstration!
