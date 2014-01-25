@@ -9,3 +9,4 @@ A simple tool to handle internationalization of source code.
 - It can perform validity checks on the translated values.
 
 See languager-demo module for how it works.
+
