@@ -6,10 +6,10 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import stni.languager.crawl.CrawlAction;
-import stni.languager.crawl.ReplacePropertiesAction;
-import stni.languager.crawl.ReplaceRegexAction;
-import stni.languager.crawl.ReplaceRegexActionParameter;
+import stni.languager.crawl.*;
+import stni.languager.online.LanguagerServer;
+import stni.languager.online.OnlineReplaceRegexAction;
+import stni.languager.online.OnlineReplacer;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -28,6 +28,24 @@ public class ReplaceKeysMojo extends AbstractOutputMojo {
     @Parameter(property = "customizerClass")
     protected String customizerClass;
 
+    /**
+     * Add a special code to every replaced text to enable online translation. This works only in HTML files.
+     */
+    @Parameter(property = "onlineTranslation", defaultValue = "false")
+    protected boolean onlineTranslation;
+
+    /**
+     * If 'onlineTranslation' is true, should the translation server be started?
+     */
+    @Parameter(property = "startServer", defaultValue = "true")
+    protected boolean startServer = true;
+
+    /**
+     * The HTTP port to be used.
+     */
+    @Parameter(property = "port", defaultValue = "8880")
+    private int port = 8880;
+
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (customizerClass != null) {
             getLog().info("Running customizer " + customizerClass);
@@ -43,15 +61,31 @@ public class ReplaceKeysMojo extends AbstractOutputMojo {
 
         getLog().info("Start replacing keys");
         writePerLanguage(true);
+
+        if (onlineTranslation && startServer) {
+            try {
+                getLog().info("Server started, end with ctrl-c");
+                final LanguagerServer server = new LanguagerServer(8880, getCsvFile(), csvEncoding, csvSeparator);
+                server.start();
+            } catch (Exception e) {
+                throw new MojoExecutionException("Problem running server", e);
+            }
+        }
     }
 
     protected CrawlAction doPerLanguage(ReplaceSearch search, Properties p, File targetDir) {
         if (search.getRegex() == null) {
             return new ReplacePropertiesAction(p, targetDir);
         }
-        ReplaceRegexActionParameter actionParameter = new ReplaceRegexActionParameter(
-                targetDir, search.getReplacement(), search.getParameterMarker(), search.getParameterSeparator(), p, search.getEscapes());
-        return new ReplaceRegexAction(search.getRegex(), null, actionParameter);
-    }
 
+        final Replacer replacer = onlineTranslation
+                ? new OnlineReplacer(search.getReplacement(), search.getParameterMarker(), search.getParameterSeparator(), p, search.getEscapes())
+                : new DefaultReplacer(search.getReplacement(), search.getParameterMarker(), search.getParameterSeparator(), p, search.getEscapes());
+
+        ReplaceRegexActionParameter actionParameter = new ReplaceRegexActionParameter(targetDir, replacer);
+
+        return onlineTranslation
+                ? new OnlineReplaceRegexAction(search.getRegex(), null, actionParameter, port)
+                : new ReplaceRegexAction(search.getRegex(), null, actionParameter);
+    }
 }

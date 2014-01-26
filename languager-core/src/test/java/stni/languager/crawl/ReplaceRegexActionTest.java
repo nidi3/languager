@@ -31,8 +31,8 @@ public class ReplaceRegexActionTest extends BaseTest {
         FileCrawler crawler = new FileCrawler(new CrawlPattern(base, "*.html", null, "utf-8"));
         crawler.crawl(
                 new ReplaceRegexAction("<msg key='(.*?)'>(.*?)</msg>", null,
-                        new ReplaceRegexActionParameter(new File(target, "de"), new ReplaceRegexActionParameter.Replacer() {
-                            public String replace(Matcher m) {
+                        new ReplaceRegexActionParameter(new File(target, "de"), new Replacer() {
+                            public String replace(File f,Matcher m) {
                                 String s = de.getProperty(m.group(1));
                                 return s == null ? "" : s;
                             }
@@ -43,7 +43,7 @@ public class ReplaceRegexActionTest extends BaseTest {
 
         crawler.crawl(
                 new ReplaceRegexAction("<msg key='(.*?)'>(.*?)</msg>", null,
-                        new ReplaceRegexActionParameter(new File(target, "en"), "($1)", null, null, en, null)
+                        new ReplaceRegexActionParameter(new File(target, "en"), new DefaultReplacer("($1)", null, null, en, null))
                 )
         );
         assertFileEquals(new File(base, "test_expected_en.html"), new File(target, "en/test.html"));
@@ -58,7 +58,7 @@ public class ReplaceRegexActionTest extends BaseTest {
         FileCrawler crawler = new FileCrawler(new CrawlPattern(base, "parameter.html", null, "utf-8"));
         crawler.crawl(
                 new ReplaceRegexAction("<msg key='(.*?)'(?:\\s*params='(.*?)')?>(.*?)</msg>", null,
-                        new ReplaceRegexActionParameter(new File(target, "de"), "$1", "{}", ",", properties, null)
+                        new ReplaceRegexActionParameter(new File(target, "de"), new DefaultReplacer("$1", "{}", ",", properties, null))
                 )
         );
         assertFileEquals(new File(base, "test_expected_parameter.html"), new File(target, "de/parameter.html"));

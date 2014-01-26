@@ -24,7 +24,7 @@ public class ReplaceRegexAction extends FindRegexAction {
         StringBuffer s = new StringBuffer();
         while (matcher.find()) {
             if (isValidMatch(matcher)) {
-                matcher.appendReplacement(s, parameter.getReplacer().replace(matcher));
+                matcher.appendReplacement(s, parameter.getReplacer().replace(file,matcher));
             }
         }
         matcher.appendTail(s);

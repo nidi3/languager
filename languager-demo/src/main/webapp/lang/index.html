@@ -7,13 +7,10 @@
     </title>
 </head>
 <body>
+
 <h1>
     <msg key="welcome">Welcome to the demo!</msg>
 </h1>
-<a href="../../../../target/languager-demo/lang/index.html">From source to target</a>
-<br/>
-<a href="../../../src/main/webapp/lang/index.html">From target to source</a>
-<br/>
 <a href="../lang/index.html">lang</a>
 <a href="../en/index.html">en</a>
 <a href="../de/index.html">de</a>
@@ -36,6 +33,11 @@
         </msg>
     </li>
     <li>
+        <msg key="describe.online">To translate directly inside the application, run maven like this:
+            'mvn package -DonlineTranslation=true' and reload this page.
+        </msg>
+    </li>
+    <li>
         Some untranslated text.
     </li>
     <li>
@@ -48,5 +50,9 @@
         <msg key="linkCheck">Is <a href="http://www.wrong">this</a> a valid link?</msg>
     </li>
 </ul>
+<button>
+    <msg key="action">Do it!</msg>
+</button>
+
 </body>
 </html>

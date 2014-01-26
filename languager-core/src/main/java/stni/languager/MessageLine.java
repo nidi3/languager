@@ -1,10 +1,7 @@
 package stni.languager;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import static stni.languager.Message.Status.NOT_FOUND;
 import static stni.languager.Message.Status.ofSymbol;
@@ -28,6 +25,15 @@ public class MessageLine implements Iterable<String> {
 
     public static MessageLine of(List<String> line) {
         return new MessageLine(line);
+    }
+
+    public MessageLine withValues(MessageLine first, Map<String, String> values) {
+        List<String> newLine = new ArrayList<>(line);
+        for (Map.Entry<String, String> entry : values.entrySet()) {
+            int index = entry.getKey().equals("default") ? 0 : first.findLang(entry.getKey());
+            newLine.set(index + DEFAULT_COLUMN, entry.getValue());
+        }
+        return of(newLine);
     }
 
     public static MessageLine firstLine(String... languages) {
@@ -105,8 +111,22 @@ public class MessageLine implements Iterable<String> {
         return !(line.size() > 1 || line.get(0).trim().length() > 0);
     }
 
+    public Map<String, String> asMap(MessageLine first) {
+        Map<String, String> res = new LinkedHashMap<>();
+        String defaultVal = readValue(0, "");
+        res.put("default", defaultVal);
+        for (int i = 1; i < first.languageCount(); i++) {
+            res.put(first.readValue(i, ""), readValue(i, readDefaultValue("")));
+        }
+        return res;
+    }
+
     public Iterator<String> iterator() {
         return line.iterator();
     }
 
+    @Override
+    public String toString() {
+        return "MessageLine{" + line + '}';
+    }
 }
