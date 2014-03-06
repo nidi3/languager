@@ -8,6 +8,7 @@ A simple tool to handle internationalization of source code.
 - It can generate properties files to be used by java.
 - It can perform validity checks on the translated values.
 - It provides a form of online translation directly inside the application.
+- It can check that properties files are correctly formatted.
 
 See languager-demo module for how it works.
 

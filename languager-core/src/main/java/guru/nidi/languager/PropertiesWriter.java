@@ -13,9 +13,15 @@ public class PropertiesWriter {
     private static final Pattern NEW_LINE = Pattern.compile("\\r?\\n|\\r", Pattern.MULTILINE);
 
     private final char csvSeparator;
+    private final boolean alwaysUseTextFormat;
+
+    public PropertiesWriter(char csvSeparator, boolean alwaysUseTextFormat) {
+        this.csvSeparator = csvSeparator;
+        this.alwaysUseTextFormat = alwaysUseTextFormat;
+    }
 
     public PropertiesWriter(char csvSeparator) {
-        this.csvSeparator = csvSeparator;
+        this(csvSeparator, false);
     }
 
     public void write(File csv, String csvEncoding, File outputDir, String basename) throws IOException {
@@ -60,7 +66,7 @@ public class PropertiesWriter {
                 String defaultValue = line.readDefaultValue(("?" + key + "?"));
                 for (int i = 0; i < out.length; i++) {
                     String val = line.readValue(i, defaultValue);
-                    String s = NEW_LINE.matcher(val).replaceAll(" \\\\\r\n");
+                    String s = PropertiesUtils.escapeSingleQuotes(NEW_LINE.matcher(val).replaceAll(" \\\\\r\n"), alwaysUseTextFormat);
                     out[i].write(key + "=" + s);
                     out[i].newLine();
                 }
