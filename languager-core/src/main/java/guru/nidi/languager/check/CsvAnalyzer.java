@@ -34,7 +34,7 @@ public class CsvAnalyzer {
             lineNum++;
             String entry = line.readValue(language, "");
             if (entry.length() > 0 && !entry.equals(line.readDefaultValue(null))) {
-                res.add(new FindResult<>(new SourcePosition(file, 0, 0, lineNum, 1), line));
+                res.add(new FindResult<>(new SourcePosition(file, lineNum, 1), line));
             }
         }
         return res;

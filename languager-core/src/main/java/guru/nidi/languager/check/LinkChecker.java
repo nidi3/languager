@@ -59,7 +59,7 @@ public class LinkChecker {
                     if (!urls.contains(url)) {
                         urls.add(url);
                         executor.submit(new LinkValidator(res, url,
-                                new SourcePosition(file, 0, 0, lineNum, col + elemNum + matcher.start())));
+                                new SourcePosition(file,  lineNum, col + elemNum + matcher.start())));
                     }
                 }
                 elemNum++;

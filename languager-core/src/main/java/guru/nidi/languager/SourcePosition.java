@@ -5,12 +5,16 @@ import java.io.File;
 /**
  *
  */
-public class SourcePosition implements Comparable<SourcePosition>{
+public class SourcePosition implements Comparable<SourcePosition> {
     private final File source;
     private final int start;
     private final int end;
     private final int line;
     private final int column;
+
+    public SourcePosition(File source, int line, int column) {
+        this(source, 0, 0, line, column);
+    }
 
     public SourcePosition(File source, int start, int end, int line, int column) {
         this.source = source;
