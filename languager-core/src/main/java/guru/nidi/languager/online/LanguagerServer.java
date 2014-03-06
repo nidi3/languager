@@ -1,12 +1,12 @@
 package guru.nidi.languager.online;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.eclipse.jetty.server.Request;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.AbstractHandler;
 import guru.nidi.languager.CsvReader;
 import guru.nidi.languager.CsvWriter;
 import guru.nidi.languager.MessageLine;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.AbstractHandler;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -81,7 +81,9 @@ public class LanguagerServer {
             if (path.startsWith("/setValue/")) {
                 String values = path.substring(10);
                 int pos = values.indexOf('/');
-                setValues(values.substring(0, pos), mapper.readValue(values.substring(pos + 1), Map.class));
+                @SuppressWarnings("unchecked")
+                Map<String, String> map = mapper.readValue(values.substring(pos + 1), Map.class);
+                setValues(values.substring(0, pos), map);
                 writeCsv();
                 return "Written";
             }
@@ -119,7 +121,7 @@ public class LanguagerServer {
             }
         }
 
-        private void setValues(String key, Map<String, String> values) throws IOException {
+        private void setValues(String key, Map<String, String> values) {
             messages.put(key, messages.get(key).withValues(firstLine, values));
         }
 

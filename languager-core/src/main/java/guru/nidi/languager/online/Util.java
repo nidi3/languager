@@ -14,8 +14,8 @@ class Util {
     static String loadResource(String name) throws IOException {
         try (final InputStream in = Util.class.getResourceAsStream(name)) {
             byte[] buf = new byte[in.available()];
-            in.read(buf);
-            return new String(buf, 0, buf.length, "utf-8");
+            int read = in.read(buf);
+            return new String(buf, 0, read, "utf-8");
         }
     }
 
@@ -23,7 +23,7 @@ class Util {
         return loadResource(name).replace(":8880", ":" + port);
     }
 
-    static boolean isOnline(File f){
+    static boolean isOnline(File f) {
         return f.getName().toLowerCase().endsWith(".html");
     }
 }

@@ -1,16 +1,16 @@
 package guru.nidi.languager.maven;
 
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
 import guru.nidi.languager.FindResult;
 import guru.nidi.languager.MessageLine;
 import guru.nidi.languager.OccurrenceReader;
 import guru.nidi.languager.Util;
 import guru.nidi.languager.check.CsvAnalyzer;
 import guru.nidi.languager.check.LinkChecker;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 
 import java.io.IOException;
 import java.util.List;
@@ -54,7 +54,7 @@ public class CheckMojo extends AbstractI18nMojo {
         }
     }
 
-    private void checkLinks() throws IOException {
+    private void checkLinks(){
         final LinkChecker checker = new LinkChecker(getCsvFile(), messages, getLogger());
         final List<FindResult<String>> brokenLinks = checker.findBrokenLinks();
         if (!brokenLinks.isEmpty()) {
