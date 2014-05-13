@@ -14,16 +14,15 @@
     <version>1.2.3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
+    <name>${project.artifactId}</name>
+    <description>Help with i18n during compile time.</description>
+    <url>https://github.com/nidi3/languager</url>
+
     <modules>
         <module>languager-core</module>
         <module>languager-maven-plugin</module>
         <module>languager-demo</module>
     </modules>
-
-    <properties>
-        <dependency.locations.enabled>false</dependency.locations.enabled>
-    </properties>
-
 
     <dependencies>
         <dependency>

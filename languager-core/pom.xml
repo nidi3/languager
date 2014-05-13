@@ -10,16 +10,8 @@
 
     <artifactId>languager-core</artifactId>
     <name>${project.artifactId}</name>
-
     <description>Extract i18n strings from a project's source code</description>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <dependency.locations.enabled>false</dependency.locations.enabled>
-    </properties>
-
-    <build>
-    </build>
 
     <dependencies>
         <dependency>
