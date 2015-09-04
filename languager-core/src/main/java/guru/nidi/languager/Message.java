@@ -30,7 +30,7 @@ public class Message {
 
         private final char symbol;
 
-        private Status(char symbol) {
+        Status(char symbol) {
             this.symbol = symbol;
         }
 

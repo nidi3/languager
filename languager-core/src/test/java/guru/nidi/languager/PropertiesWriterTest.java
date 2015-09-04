@@ -31,9 +31,10 @@ import static org.junit.Assert.assertNull;
  */
 public class PropertiesWriterTest extends BaseTest {
     private PropertiesWriter writer = new PropertiesWriter(',');
-    private File tempDir = File.createTempFile("pre", "post").getParentFile();
+    private final File tempDir;
 
     public PropertiesWriterTest() throws IOException {
+        tempDir = File.createTempFile("pre", "post").getParentFile();
     }
 
     @Test

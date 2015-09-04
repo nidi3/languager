@@ -67,7 +67,7 @@ public class ReplaceKeysMojo extends AbstractOutputMojo {
             try {
                 extendClasspathWithCompile();
                 final Class<?> customizer = Class.forName(customizerClass.replace('/', '.'), true, Thread.currentThread().getContextClassLoader());
-                final Method main = customizer.getMethod("main", new Class[]{String[].class});
+                final Method main = customizer.getMethod("main", String[].class);
                 main.invoke(null, (Object) new String[]{project.getBasedir().getAbsolutePath()});
             } catch (Exception e) {
                 throw new MojoExecutionException("Problem running customizer", e);
